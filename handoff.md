@@ -1,27 +1,27 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-24 23:12 America/Chicago by lead/session 1_
+_Last updated: 2026-10-24 23:10 America/Chicago by lead/session 1_
 _Current phase: 3–5 — P0 API, graph, AI | Gates passed: G1 ☐ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
 Bootstrap and Phase 2 seed are written and checked. H2/H3 are done; H1 was deferred by the human. Python 3.11.9 runs from ignored `.tools/Python311`; dependencies are installing. All product work stays in mock mode until Meta access is verified.
 
 ## Next up (do these in order)
-1. Commit Phase 2 seed and handoff; keep supplied JPGs untracked and commit only normalized PNGs.
-2. Implement Phase 3 API, Phase 4 graph, and Phase 5 AI against `models.py`/`API_SCHEMA.md`.
-3. Implement Phase 6 voice from Meta's documented batch endpoint, then Phase 8 frontend and local P0 loop.
+1. Finish and verify Phase 3 API, Phase 4 graph, and Phase 5 AI against `models.py`/`API_SCHEMA.md`.
+2. Finish Phase 6 voice from Meta's documented batch endpoint and Phase 8 frontend, then run the local P0 loop.
+3. Prepare deploy artifacts and raise H5 only when a concrete deployment is ready for login/env setup.
 
 ## In progress (exact state)
-- Task: Phase 2 complete, Phase 3–5 next.
+- Task: Phase 3 API, Phase 4 graph, Phase 5–6 AI, Phase 8 frontend in progress.
 - Files touched since last commit: `.env.example`, `.gitignore`, `CONTEXT.md`, `handoff.md`, `backend/app/db.py`, `seed_check.py`, `seed/generate_seed.py`, seed JSONs, `backend/tests/test_api_seed.py`, `backend/requirements.txt`, five design PNGs.
-- State: Phase 2 tests pass; Python dependencies are installing. No app routes or frontend code yet.
-- Last command run + result: `..\.tools\Python311\python.exe -m pytest -q tests/test_api_seed.py --basetemp=..\.tools\pytest-phase2-1` from backend: 4 passed (agent). `python -m app.seed_check` shows Duval 0/6 and South Wing 0/8, each top gap.
+- State: Phase 2 tests pass; Python dependencies are installing. API, AI, frontend agents are editing their owned files. `graph.py` and tests exist; MiniLM local model preparation remains.
+- Last command run + result: `..\.tools\Python311\python.exe -m pytest -q tests/test_graph.py --basetemp=..\.tools\pytest-graph-1` from backend: 4 passed. Seed checks: Duval 0/6 and South Wing 0/8, each top gap. Backend agent added spend-preserving reset; 5 seed tests passed.
 
 ## Completed
 | Phase | Task | Verified by | Commit |
 |---|---|---|---|
 | 1 | Bootstrap, shared contracts, mock fixtures, design prompts | File checks; JSON parse; Python import pending runtime | `ad81c57` |
-| 2 | Deterministic A/B seeds, SQLite reseed, public serializers | Seed check; 4 focused tests passed | pending Phase 2 commit |
+| 2 | Deterministic A/B seeds, SQLite reseed, public serializers | Seed check; 4 focused tests passed | `744f1fb` |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
@@ -45,6 +45,7 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 | 2026-10-24 | Use Voice Path A: batch upload to `/v1/asr/transcribe` after ffmpeg conversion to 24 kHz mono PCM WAV. | Confirmed in Meta's official speech-to-text documentation. H4 is unnecessary. |
 | 2026-10-24 | Set Spark defaults to `muse-spark-1.3-contributor`, $0.10/M input, $0.20/M output; voice $0.003/min. | H2 workshop answers and Meta's official pricing pages. This updates the Phase 1 example after bootstrap. All residents are fictional; Contributor mode may use data for training. |
 | 2026-10-24 | Use Meta's model-specific Contributor limits (150 RPM, 3M TPM). | The workshop's 3,000 RPM/4M TPM applies to the standard model, per Meta's pricing page. |
+| 2026-10-24 | Preserve `api_usage` across Reset demo and same-file startup reseed. | Otherwise the $40 cap can be bypassed by pressing Reset. Ephemeral host cold starts still need a durable ledger or a documented limitation. |
 
 ## Meta API facts confirmed
 No live account check yet. Human supplied H2 answers: choose `muse-spark-1.3-contributor` and the standalone Meta API agent path; skip Graph API. Meta docs confirm Contributor pricing $0.10/M input, $0.20/M output, 150 RPM/3M TPM (https://dev.meta.ai/docs/pricing-rate-limits). Voice Path A is documented by Meta: multipart POST `/v1/asr/transcribe`, model `muse-voice-transcribe-1.0`, `request` JSON plus WAV `audio`, bearer header, 24 kHz mono 16-bit PCM, JSON `transcript`; pricing $0.18/hour (https://dev.meta.ai/docs/speech-to-text).

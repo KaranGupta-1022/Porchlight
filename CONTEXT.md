@@ -270,5 +270,14 @@ class HealthResponse(BaseModel):
 
 ## Meta API facts and workshop answers
 
-The guide lists base URL https://api.meta.ai/v1 and an OpenAI-compatible SDK. Confirmed account model ID, speech-to-text format/protocol, pricing, limits, and Muse connector path are pending H1/H2. No Meta call has been made. Workshop answers: pending.
+The guide lists base URL https://api.meta.ai/v1 and an OpenAI-compatible SDK. H1 is deferred by the human, so no Meta call has been made and account model availability/credit remain unconfirmed. H2 workshop answers were supplied by the human on 2026-10-24:
+
+1. A true Muse connector needs OAuth-shaped trust and would make judges authenticate. Build a standalone agent using the Meta Model API for a frictionless demo, after G2. The guide's Spark function-calling fallback is the intended in-app path.
+2. Voice supports live and static uploads. Use a short uploaded file for this sprint. Official Meta docs specify WAV for the batch endpoint; convert browser audio to WAV before upload.
+3. Use `muse-spark-1.3-contributor` for this fictional-data demo. The human reports $0.10/M input and $0.20/M output and warns that thinking tokens count as output; use low reasoning. Meta's official [pricing page](https://dev.meta.ai/docs/pricing-rate-limits) confirms prices and notes Contributor content may train future Meta models. No real personal data will be sent.
+4. Workshop reported 3,000 RPM and 4M TPM, but Meta's official pricing page lists **150 RPM and 3M TPM for the Contributor model**. Use the model-specific official limit.
+5. Favor one or two flawless core tools over breadth.
+6. Skip Facebook Graph API; use fictional seed data.
+
+Meta's [speech-to-text documentation](https://dev.meta.ai/docs/speech-to-text), fetched 2026-10-24, confirms Path A: `POST https://api.meta.ai/v1/asr/transcribe` with `Authorization: Bearer <key>` and multipart parts `request` (JSON: `{"mode":"PUSH_TO_TALK","model":"muse-voice-transcribe-1.0","audioEncoding":"WAV"}`) and `audio` (WAV). Convert browser audio with ffmpeg to mono 16-bit PCM WAV at 24 kHz. Default JSON response includes `transcript` and `audioDurationMs`. Voice pricing on that page is $0.18/hour = $0.003/minute. Keep all network calls in `ai/provider.py`.
 
