@@ -1,22 +1,22 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-25 00:27 America/Chicago by lead/session 2_
+_Last updated: 2026-10-25 00:28 America/Chicago by lead/session 2_
 _Current phase: 6, 9 — live Voice and P0 deployment | Gates passed: G1 ☑ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
-G1 passed; live Priya nudge and editable draft both return grounded text without degradation. Total recorded spend is $0.0005699. The local mock P0 API loop passes in both communities, 28 backend tests pass, and the frontend build passes. H9 is approved; commit/push next.
+G1 passed; live Priya nudge and editable draft both return grounded text without degradation. Total recorded spend is $0.0005699. The local mock P0 API loop passes in both communities, 28 backend tests pass, and the frontend build passes. H9 is approved; code is pushed to GitHub at `50a3977`. Await Render/Vercel URLs for hosted G2 checks.
 
 ## Next up (do these in order)
-1. Commit the reviewed live Spark fix in `backend/app/ai/provider.py`, `spark.py`, `backend/tests/test_ai.py`, `scripts/smoke_spark.py`, and this handoff; push `main` to `origin` (remote main was checked unchanged at `315a780`).
-2. Human imports root `render.yaml` in Render and the `frontend/` project in Vercel (website sign-ins only), enters the Meta key in Render settings, and sends both URLs. Check hosted build/memory, then set `AI_MODE=live` for G2.
-3. Verify deployed full loop and cache hits three times and request H6 phone voice checks. Stay in P0 until deployed live G2 passes.
+1. Human imports root `render.yaml` in Render and the `frontend/` project in Vercel (website sign-ins only), enters the Meta key in Render settings, and sends both URLs. Check hosted build/memory, then set `AI_MODE=live` for G2.
+2. Verify deployed full loop and cache hits three times and request H6 phone voice checks. Stay in P0 until deployed live G2 passes.
+3. After G2, continue G2→P1→P2 in guide scope order if event time permits.
 
 ## In progress (exact state)
-- Task: Commit verified live Spark changes and push. Render/Vercel prep is committed in `3eb6ea3`; H9 public deployment on free plans and GitHub push are approved. The human signed in to websites only and will create the projects. Live Voice/phone test remains for deployed G2.
+- Task: Wait for the human to create Render/Vercel projects from the pushed `main` branch. Render/Vercel prep is committed in `3eb6ea3`, Spark fix in `50a3977`, and `git push origin main` succeeded (`315a780..50a3977`). H9 approved. Live Voice/phone test remains for deployed G2.
 - Continuity note: context was compacted while the agents were editing. The seed vector artifact and production requirements are committed in `aafa773`; graph loader is committed in `1ff53d7`; AI and devops changes remain uncommitted and require review before committing.
 - Files touched since last commit: `backend/app/ai/provider.py`, `backend/app/ai/spark.py`, `backend/tests/test_ai.py`, `scripts/smoke_spark.py` (AI agent editing); `DEPLOY.md`, `render.yaml`, `backend/Dockerfile` (devops); `handoff.md`. Vercel correction and context update are committed in `42d51fb`.
 - State: Mock backend at `http://127.0.0.1:8000` serves `/api/health` and `/docs` (200). G1 live smoke returned visible text and usage. Live Priya nudge and draft both generated non-degraded grounded text using `reasoning_effort=minimal` and 500 tokens. The prior draft 300-token limit truncated JSON after 267–274 reasoning tokens; a targeted 500-token draft passed. Fresh local mock TestClient health 200 with `torch_loaded=False`. Frontend 390×844 home render reviewed; production build passes outside sandbox. QA privacy fix passes and `.dockerignore` excludes `.env`/`.env.*`. Docker daemon unavailable.
-- Last command run + result: targeted live draft returned `degraded=false`, `/api/usage` $0.0005699. Full backend suite 28 passed, one Starlette warning; seed check passed, Duval 0/6 and South Wing 0/8; `npm.cmd run build` passed outside sandbox; local health 200 without Torch.
+- Last command run + result: `git push origin main` succeeded to GitHub at `50a3977`. Before push, targeted live draft returned `degraded=false`, `/api/usage` $0.0005699, full backend suite 28 passed, seed check passed, `npm.cmd run build` passed, and local health 200 without Torch.
 
 ## Completed
 | Phase | Task | Verified by | Commit |
@@ -27,8 +27,8 @@ G1 passed; live Priya nudge and editable draft both return grounded text without
 | 4 | Reach, gaps, bridge scoring with local MiniLM | 4 graph tests; actual MiniLM loaded and ranked Priya first | `f32914a` |
 | 5–6 | Mock and live-capable Spark/Voice provider, cache, cap, batch WAV upload | 21-test suite; real ffmpeg WAV conversion. Live Voice pending H6. | `ab1c365` |
 | 9 (local prep) | Dockerfile, build-time MiniLM, ffmpeg, deployment notes | File review; container build pending Docker daemon. Full mock API loop passed locally. | `400d444` |
-| 0 (G1) | Live Spark smoke returns text and usage | `AI_MODE=live` `scripts/smoke_spark.py`; `/api/usage` read | pending commit for reasoning fix |
-| 5 (live) | Minimal reasoning and 500-token JSON budget produce grounded nudge and editable draft | Live Priya nudge and draft non-degraded; full backend suite 28 passed | pending commit |
+| 0 (G1) | Live Spark smoke returns text and usage | `AI_MODE=live` `scripts/smoke_spark.py`; `/api/usage` read | `50a3977` |
+| 5 (live) | Minimal reasoning and 500-token JSON budget produce grounded nudge and editable draft | Live Priya nudge and draft non-degraded; full backend suite 28 passed | `50a3977` |
 | 3 (QA fix) | Reject numbered exact addresses in invite title, activity, and place hint | 3 focused privacy cases; 24-test backend suite | `c57a09f` |
 | 9 (QA fix) | Exclude local `.env` secrets from backend Docker build context | `.dockerignore` inspected; Docker build pending daemon | `8999870` |
 | 5 (samples) | Ten fictional mock prompt/output pairs for nudges, drafts, and invite parsing | QA checked seed facts, safety wording, numbering, and JSON | `eeb176a` |
@@ -37,6 +37,7 @@ G1 passed; live Priya nudge and editable draft both return grounded text without
 | 9 (Render prep) | Generated normalized MiniLM vectors for 70 seeded residents and slim runtime requirements | Re-ran local generator; validated 70 vectors at 384 dimensions, matching seed hashes/interests | `aafa773` |
 | 4/9 (Render graph) | Load seeded MiniLM vectors without Torch at runtime; reject stale artifacts | Full backend suite 28 passed; seed check passed; graph tests block model imports | `1ff53d7` |
 | 9 (Render deployment) | Render Free Blueprint, slim Dockerfile, Vercel setup instructions | YAML/static checks, local health 200 without Torch; hosted build pending | `3eb6ea3` |
+| 9 (publication prep) | Pushed P0 source to GitHub for Render/Vercel imports | `git push origin main` succeeded to `50a3977`; `.env` untracked/ignored | `50a3977` |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
