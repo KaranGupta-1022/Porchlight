@@ -1,0 +1,260 @@
+"""Single gateway for Meta calls, caching, fallback, and usage accounting."""
+
+from __future__ import annotations
+
+import hashlib
+import io
+import json
+import logging
+import os
+import sqlite3
+import subprocess
+import uuid
+import wave
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+from contextlib import closing
+
+from dotenv import load_dotenv
+
+from app.db import get_connection
+from app.models import UsageFeature, UsageResponse
+
+
+ROOT = Path(__file__).resolve().parents[3]
+FIXTURES = Path(__file__).resolve().parent / "fixtures"
+load_dotenv(ROOT / ".env")
+load_dotenv(ROOT / "backend" / ".env", override=False)
+LOG = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class ProviderResult:
+    value: Any
+    degraded: bool = False
+    usage: dict[str, Any] | None = None
+
+
+def ai_mode() -> str:
+    return "live" if os.getenv("AI_MODE", "mock").lower() == "live" else "mock"
+
+
+def cost_cap() -> float:
+    try:
+        return max(0.0, min(float(os.getenv("COST_CAP_USD", "40")), 40.0))
+    except ValueError:
+        return 40.0
+
+
+def _price(name: str, default: float) -> float:
+    try:
+        return max(0.0, float(os.getenv(name, str(default))))
+    except ValueError:
+        return default
+
+
+def _usage_db() -> sqlite3.Connection:
+    conn = get_connection()
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS api_usage (
+        id TEXT PRIMARY KEY, ts TEXT NOT NULL, feature TEXT NOT NULL,
+        model TEXT NOT NULL, in_tokens INTEGER NOT NULL, out_tokens INTEGER NOT NULL,
+        seconds_audio REAL NOT NULL, usd REAL NOT NULL, cached INTEGER NOT NULL)"""
+    )
+    conn.commit()
+    return conn
+
+
+def _record(feature: str, model: str, *, in_tokens: int = 0,
+            out_tokens: int = 0, seconds_audio: float = 0.0,
+            usd: float = 0.0, cached: bool = False) -> None:
+    with closing(_usage_db()) as conn:
+        with conn:
+            conn.execute(
+                "INSERT INTO api_usage VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (str(uuid.uuid4()), datetime.now(timezone.utc).isoformat(), feature,
+                 model, in_tokens, out_tokens, seconds_audio, usd, int(cached)),
+            )
+
+
+def total_spend() -> float:
+    with closing(_usage_db()) as conn:
+        row = conn.execute("SELECT COALESCE(SUM(usd), 0) FROM api_usage").fetchone()
+    return float(row[0])
+
+
+def usage_summary() -> UsageResponse:
+    with closing(_usage_db()) as conn:
+        rows = conn.execute(
+            "SELECT feature, SUM(usd), COUNT(*), SUM(cached) "
+            "FROM api_usage GROUP BY feature ORDER BY feature"
+        ).fetchall()
+    return UsageResponse(
+        total_usd=total_spend(), cost_cap_usd=cost_cap(),
+        by_feature=[UsageFeature(feature=r[0], usd=float(r[1]), calls=int(r[2]),
+                                 cache_hits=int(r[3])) for r in rows],
+    )
+
+
+def fixture(name: str) -> Any:
+    return json.loads((FIXTURES / f"{name}.json").read_text(encoding="utf-8"))
+
+
+def _cache_path(model: str, messages: list[dict[str, Any]],
+                params: dict[str, Any]) -> Path:
+    key = json.dumps({"model": model, "messages": messages, "params": params},
+                     sort_keys=True, separators=(",", ":"), default=str)
+    digest = hashlib.sha256(key.encode("utf-8")).hexdigest()
+    cache_dir = Path(os.getenv("AI_CACHE_DIR", ROOT / "backend" / "cache"))
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    return cache_dir / f"{digest}.json"
+
+
+def _read_cache(path: Path) -> dict[str, Any] | None:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def _write_cache(path: Path, value: dict[str, Any]) -> None:
+    temp = path.with_name(f"{path.stem}.{uuid.uuid4().hex}.tmp")
+    temp.write_text(json.dumps(value, ensure_ascii=False), encoding="utf-8")
+    temp.replace(path)
+
+
+def _fallback(feature: str, model: str, fallback: Any,
+              path: Path | None = None) -> ProviderResult:
+    cached = _read_cache(path) if path else None
+    if cached is not None:
+        _record(feature, model, cached=True)
+        return ProviderResult(cached["value"], degraded=True, usage=cached.get("usage"))
+    return ProviderResult(fallback, degraded=True)
+
+
+def _reserve_estimate(messages: list[dict[str, Any]], max_tokens: int) -> float:
+    # Conservative enough to avoid crossing the cap for ordinary demo prompts.
+    chars = len(json.dumps(messages, default=str))
+    input_tokens = max(1, chars // 3)
+    return (input_tokens * _price("PRICE_IN_PER_M", 0.10)
+            + max_tokens * _price("PRICE_OUT_PER_M", 0.20)) / 1_000_000
+
+
+def complete(messages: list[dict[str, Any]], *, feature: str,
+             fallback: str, max_tokens: int = 300,
+             model: str | None = None) -> ProviderResult:
+    """Return raw Spark text. A caller may validate JSON and retry once."""
+    model = model or os.getenv("MUSE_SPARK_MODEL", "muse-spark-1.3-contributor")
+    params: dict[str, Any] = {"max_tokens": max_tokens}
+    path = _cache_path(model, messages, params)
+    if ai_mode() == "mock":
+        return ProviderResult(fallback)
+    cached = _read_cache(path)
+    if cached is not None:
+        _record(feature, model, cached=True)
+        return ProviderResult(cached["value"], usage=cached.get("usage"))
+    if total_spend() + _reserve_estimate(messages, max_tokens) >= cost_cap():
+        LOG.warning("Meta cost cap reached for %s", feature)
+        return _fallback(feature, model, fallback, path)
+    key = os.getenv("META_MODEL_API_KEY", "").strip()
+    if not key:
+        LOG.warning("Meta key unavailable for %s", feature)
+        return _fallback(feature, model, fallback, path)
+    try:
+        from openai import OpenAI
+
+        client = OpenAI(api_key=key,
+                        base_url=os.getenv("META_API_BASE", "https://api.meta.ai/v1"),
+                        timeout=15.0, max_retries=0)
+        response = client.chat.completions.create(
+            model=model, messages=messages, max_tokens=max_tokens,
+        )
+        value = response.choices[0].message.content or ""
+        usage_obj = response.usage
+        usage = usage_obj.model_dump() if usage_obj is not None else {}
+        if usage.get("prompt_tokens") is None or usage.get("completion_tokens") is None:
+            # Keep the cap conservative if a compatible endpoint omits usage.
+            usage = {**usage,
+                     "prompt_tokens": max(1, len(json.dumps(messages)) // 3),
+                     "completion_tokens": max_tokens,
+                     "estimated": True}
+        in_tokens = int(usage["prompt_tokens"])
+        out_tokens = int(usage["completion_tokens"])
+        usd = (in_tokens * _price("PRICE_IN_PER_M", 0.10)
+               + out_tokens * _price("PRICE_OUT_PER_M", 0.20)) / 1_000_000
+        _record(feature, model, in_tokens=in_tokens, out_tokens=out_tokens, usd=usd)
+        _write_cache(path, {"value": value, "usage": usage})
+        return ProviderResult(value, usage=usage)
+    except Exception as exc:
+        LOG.warning("Meta request failed for %s: %s", feature, type(exc).__name__)
+        return _fallback(feature, model, fallback, path)
+
+
+def _wav_bytes(audio_bytes: bytes) -> tuple[bytes, float]:
+    """Convert browser audio to 24 kHz mono 16-bit PCM WAV with ffmpeg."""
+    pcm = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", "pipe:0",
+         "-ac", "1", "-ar", "24000", "-acodec", "pcm_s16le", "-f", "s16le", "pipe:1"],
+        input=audio_bytes, capture_output=True, timeout=15, check=True,
+    ).stdout
+    if not pcm:
+        raise ValueError("empty converted audio")
+    output = io.BytesIO()
+    with wave.open(output, "wb") as wav:
+        wav.setnchannels(1)
+        wav.setsampwidth(2)
+        wav.setframerate(24_000)
+        wav.writeframes(pcm)
+    return output.getvalue(), len(pcm) / 48_000
+
+
+def transcribe(audio_bytes: bytes, mime_type: str) -> ProviderResult:
+    """Batch Muse Voice request. Network and price accounting remain here."""
+    fallback = fixture("transcript")["transcript"]
+    model = "muse-voice-transcribe-1.0"
+    if ai_mode() == "mock":
+        return ProviderResult(fallback)
+    # Voice caching is keyed by a content digest, the model, and conversion params.
+    digest = hashlib.sha256(audio_bytes).hexdigest()
+    path = _cache_path(model, [{"audio_sha256": digest}],
+                       {"audioEncoding": "WAV", "mime_type": mime_type})
+    cached = _read_cache(path)
+    if cached is not None:
+        _record("voice", model, cached=True)
+        return ProviderResult(cached["value"], usage=cached.get("usage"))
+    key = os.getenv("META_MODEL_API_KEY", "").strip()
+    if not key or total_spend() >= cost_cap():
+        LOG.warning("Voice unavailable or cost cap reached")
+        return _fallback("voice", model, fallback, path)
+    try:
+        wav, seconds = _wav_bytes(audio_bytes)
+        estimated = seconds / 60 * _price("PRICE_VOICE_PER_MIN", 0.003)
+        if total_spend() + estimated >= cost_cap():
+            return _fallback("voice", model, fallback, path)
+        import httpx
+
+        request = {"mode": "PUSH_TO_TALK", "model": model, "audioEncoding": "WAV"}
+        with httpx.Client(timeout=15.0) as client:
+            response = client.post(
+                os.getenv("META_API_BASE", "https://api.meta.ai/v1").rstrip("/")
+                + "/asr/transcribe",
+                headers={"Authorization": f"Bearer {key}"},
+                files={"request": (None, json.dumps(request), "application/json"),
+                       "audio": ("recording.wav", wav, "audio/wav")},
+            )
+            response.raise_for_status()
+            data = response.json()
+        transcript = str(data["transcript"]).strip()
+        if not transcript:
+            raise ValueError("empty transcript")
+        billed_seconds = float(data.get("audioDurationMs", seconds * 1000)) / 1000
+        usd = billed_seconds / 60 * _price("PRICE_VOICE_PER_MIN", 0.003)
+        _record("voice", model, seconds_audio=billed_seconds, usd=usd)
+        usage = {"audioDurationMs": data.get("audioDurationMs")}
+        _write_cache(path, {"value": transcript, "usage": usage})
+        return ProviderResult(transcript, usage=usage)
+    except Exception as exc:
+        LOG.warning("Voice request failed: %s", type(exc).__name__)
+        return _fallback("voice", model, fallback, path)
