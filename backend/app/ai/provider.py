@@ -200,14 +200,18 @@ def _log_model_catalog_once(client: Any) -> None:
         catalog = client.models.list()
         ids = {item.id for item in catalog.data if isinstance(getattr(item, "id", None), str)}
         LOG.warning(
-            "Meta model catalog status=ok contributor_listed=%s standard_listed=%s",
+            "Meta model catalog status=ok contributor_listed=%s standard_listed=%s "
+            "spark_12_listed=%s spark_11_listed=%s voice_transcribe_listed=%s",
             "muse-spark-1.3-contributor" in ids, "muse-spark-1.3" in ids,
+            "muse-spark-1.2" in ids, "muse-spark-1.1" in ids,
+            "muse-voice-transcribe-1.0" in ids,
         )
     except Exception as exc:
         status = getattr(exc, "status_code", None)
         LOG.warning(
             "Meta model catalog status=%s contributor_listed=unknown "
-            "standard_listed=unknown error_class=%s",
+            "standard_listed=unknown spark_12_listed=unknown "
+            "spark_11_listed=unknown voice_transcribe_listed=unknown error_class=%s",
             status if isinstance(status, int) else "unknown", type(exc).__name__,
         )
 

@@ -161,6 +161,8 @@ def test_spark_404_catalog_probe_is_once_and_redacted(monkeypatch, tmp_path, cap
         return SimpleNamespace(data=[
             SimpleNamespace(id="muse-spark-1.3-contributor"),
             SimpleNamespace(id="muse-spark-1.3"),
+            SimpleNamespace(id="muse-spark-1.2"),
+            SimpleNamespace(id="muse-voice-transcribe-1.0"),
             SimpleNamespace(id="private-catalog-sentinel"),
         ])
 
@@ -178,10 +180,13 @@ def test_spark_404_catalog_probe_is_once_and_redacted(monkeypatch, tmp_path, cap
     assert first.degraded and second.degraded
     assert counts == {"chat": 2, "catalog": 1}
     assert "contributor_listed=True standard_listed=True" in caplog.text
+    assert "spark_12_listed=True spark_11_listed=False " \
+           "voice_transcribe_listed=True" in caplog.text
     assert "model_not_found_code=True" in caplog.text
     assert all(sentinel not in caplog.text for sentinel in (
         "private-key-sentinel", "private-response-sentinel",
-        "private-prompt-sentinel", "private-catalog-sentinel"))
+        "private-prompt-sentinel", "private-catalog-sentinel",
+        "muse-spark-1.2", "muse-voice-transcribe-1.0"))
     assert provider.total_spend() == 0
 
 
@@ -220,7 +225,9 @@ def test_spark_404_catalog_error_logs_only_status_and_class(monkeypatch, tmp_pat
                                    feature="nudge", fallback="offline")
     assert result.degraded
     assert "Meta model catalog status=403 contributor_listed=unknown " \
-           "standard_listed=unknown error_class=Catalog403" in caplog.text
+           "standard_listed=unknown spark_12_listed=unknown " \
+           "spark_11_listed=unknown voice_transcribe_listed=unknown " \
+           "error_class=Catalog403" in caplog.text
     assert "model_not_found_code=None" in caplog.text
     assert all(sentinel not in caplog.text for sentinel in (
         "private-key-sentinel", "private-response-sentinel",
