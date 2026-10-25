@@ -1,6 +1,6 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-25 01:44 America/Chicago by lead/session 3_
+_Last updated: 2026-10-25 01:48 America/Chicago by lead/session 3_
 _Current phase: 6, 9 — live Voice and P0 deployment | Gates passed: G1 ☑ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
@@ -8,15 +8,15 @@ G1 passed and local live Priya nudge/draft pass. The deployed mock loop and CORS
 
 ## Next up (do these in order)
 1. `render.yaml`/`DEPLOY.md` Blueprint fix is committed and pushed as `7c6abfd`. At H5/H10, the human sets Render `MUSE_SPARK_MODEL=muse-spark-1.3`, `PRICE_IN_PER_M=1.25`, `PRICE_OUT_PER_M=4.25`, keeping `AI_MODE=live`, cap, and key; Save and deploy. They said they will do this but have not confirmed completion. Trigger one hosted nudge and inspect `degraded` plus `/api/usage`.
-2. The Quarry P0 mock Voice fix is committed as `00070cb` and pushed in GitHub `44f7d58`; the pending Render deploy should include it if the latest Git commit is rebuilt. If Standard works, complete the three deployed live loops with reset/cache-hit checks and Voice parse; otherwise inspect the new Render warning. Stay in P0 until G2 passes.
+2. The Quarry P0 mock Voice fix is committed as `00070cb` and pushed in GitHub `44f7d58`; the pending Render deploy should include it if the latest Git commit is rebuilt. If Standard works, run `.tools/deployed_live_probe.py` for three deployed live loops across A and B with reset/cache-hit checks, then verify live Voice parse; otherwise inspect the new Render warning. Stay in P0 until G2 passes.
 3. After G2, continue G2→P1→P2 in guide scope order if event time permits.
 
 ## In progress (exact state)
 - Task: Diagnose hosted Spark fallback. Human found the new diagnostic line after an initial log search missed it: `Meta Spark HTTP 404 feature=nudge model_expected=True model_outer_whitespace=False model_quote_wrapped=False base_expected=True chat_path_expected=True sdk_version=3.37.0 key_present=True`. This matches local SDK and expected request shape, so a malformed model/base/path is ruled out. A model access/routing issue on Render is an inference, not yet proven. Trial the documented Standard model with its higher rates configured accurately, then one hosted nudge.
 - Continuity note: context was compacted again at the start of session 3. Read `AGENTS.md`, this handoff, relevant guide sections, and `CONTEXT.md`; compared git log/status. Commits through `60b550f` are complete. Only original human untracked guide/instruction files and design JPGs remain; no half-done tracked edits. Prior stale note about uncommitted AI/devops files was obsolete and removed.
-- Files touched since last commit: none tracked. Devops review found that Blueprint sync can overwrite dashboard values hardcoded in YAML; the fix removed mutable AI mode/model/token prices while keeping the cap and was pushed as `7c6abfd`. Quarry fix was committed as `00070cb` and pushed through `44f7d58`. Ignored `.tools/quarry_mock_probe.py` was created by QA.
+- Files touched since last commit: `handoff.md` only. Ignored `.tools/deployed_live_probe.py` was expanded by QA for all required A/B loops and cache checks but not run live. Devops Blueprint fix was pushed as `7c6abfd`, Quarry fix as `00070cb` through `44f7d58`.
 - State: Mock backend at `http://127.0.0.1:8000` serves `/api/health` and `/docs` (200). G1 live smoke returned visible text and usage. Live Priya nudge and draft both generated non-degraded grounded text using `reasoning_effort=minimal` and 500 tokens. The prior draft 300-token limit truncated JSON after 267–274 reasoning tokens; a targeted 500-token draft passed. Fresh local mock TestClient health 200 with `torch_loaded=False`. Frontend 390×844 home render reviewed; production build passes outside sandbox. QA privacy fix passes and `.dockerignore` excludes `.env`/`.env.*`. Docker daemon unavailable.
-- Last command run + result: public Vercel HTML and JS bundle both returned 200; bundle contains `porchlight-api-vsn3.onrender.com` and not `api.example.com`. The human sent a Vercel Environment screenshot while the Standard model trial belongs in Render; clarified to leave `VITE_API_BASE` alone. `git push origin main` succeeded to `7c6abfd`; Render/Vercel account connections remain not installed. Devops YAML parse and diff checks passed; Quarry fix full backend 29 passed and mock probe passed. New hosted nudge remained `degraded=true`; fresh-instance `/api/usage` $0.
+- Last command run + result: QA AST-parsed `.tools/deployed_live_probe.py`, confirmed it is ignored, and did not make hosted/Meta calls. Public Vercel HTML and JS bundle both returned 200; bundle contains `porchlight-api-vsn3.onrender.com` and not `api.example.com`. The human sent a Vercel Environment screenshot while the Standard model trial belongs in Render; clarified to leave `VITE_API_BASE` alone. `git push origin main` succeeded to `7c6abfd`; account connections remain not installed. Quarry fix full backend 29 passed and mock probe passed. New hosted nudge remained `degraded=true`; fresh-instance `/api/usage` $0.
 
 ## Completed
 | Phase | Task | Verified by | Commit |
@@ -43,6 +43,7 @@ G1 passed and local live Priya nudge/draft pass. The deployed mock loop and CORS
 | 9 (Quarry mock check) | Community B gap, nudge, edit/send, mark met, voice preview/confirm, reset, A/B schema | `.tools/quarry_mock_probe.py` passed; wrong mock Voice place hint found for fix | probe ignored, no commit |
 | 6/9 (Quarry Voice fallback) | Location-neutral mock transcript and seed-specific public place hint for each community | Focused AI tests 10 passed; full backend tests 29 passed; Quarry mock probe passed with no Avenue G in Quarry preview | `00070cb` (pushed via `44f7d58`) |
 | 9 (Blueprint env safety) | Keep dashboard AI mode/model/token prices across Blueprint sync; document Standard trial | Official Render docs reviewed; YAML parsed; `git diff --check` passed; pushed | `7c6abfd` |
+| 9 (G2 probe prep) | Prepare three hosted live loops for Hyde Park and Quarry with usage/cache checks and final reset | QA AST parse passed; script ignored; no live calls | ignored `.tools` script, no commit |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
