@@ -1,22 +1,22 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-25 00:59 America/Chicago by lead/session 2_
+_Last updated: 2026-10-25 01:03 America/Chicago by lead/session 2_
 _Current phase: 6, 9 — live Voice and P0 deployment | Gates passed: G1 ☑ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
-G1 passed; live Priya nudge and editable draft both return grounded text without degradation. Local spend is $0.0005699. The deployed mock API loop passes, including voice preview/pin and reset; Quarry map/gap/nudge also pass. Render CORS now allows the Vercel origin. Await Render `AI_MODE=live` for G2.
+G1 passed and local live Priya nudge/draft pass. The deployed mock loop and CORS pass. Render is live, but hosted Spark nudge degraded twice with no nudge usage recorded; hosted Voice has one $0.00014 charge. H10 Render log exception is pending. The three-run G2 loop stopped after run 1 and reset the demo; H6 phone test is open.
 
 ## Next up (do these in order)
-1. Wait for the human to set Render `AI_MODE=live` and confirm `META_MODEL_API_KEY` is present in Render Environment. `/api/health` currently reports mock. Then verify full deployed loop and cache hits three times, inspect `/api/usage`, and request H6 phone voice checks.
-2. Stay in P0 until deployed live G2 passes; then continue P1/P2 in guide order if event time permits.
+1. Obtain the safe `Meta request failed for nudge: <exception class>` line from Render Logs (H10), determine why hosted Spark fails before metering, and fix or configure it. Render is already `AI_MODE=live`; Voice succeeded once.
+2. Re-run the three hosted live Spark loops with reset and cache-hit checks only after the cause is fixed; inspect `/api/usage`. Complete H6 phone voice test and deployed UI check. Stay in P0 until G2 passes.
 3. After G2, continue G2→P1→P2 in guide scope order if event time permits.
 
 ## In progress (exact state)
-- Task: Wait for Render live mode. The human corrected CORS: preflight now HTTP 200 with exact Vercel allow-origin; deployed mock loop, including both communities, passes. Render/Vercel prep is committed in `3eb6ea3`, Spark fix in `50a3977`, GitHub `main` includes handoff commit `9ae89da`, and H9 is approved. Live Voice/phone test remains for G2.
+- Task: Diagnose hosted Spark failure. `.tools/deployed_live_probe.py` stopped on run-1 nudge `degraded=true` and final reset 200. A second hosted nudge also degraded. Neither recorded Spark usage, while hosted Voice has one $0.00014 charge. The human was told the reset loop ended and H6 phone test can proceed; H10 Render exception line requested. CORS and mock loops pass; H9 approved.
 - Continuity note: context was compacted while the agents were editing. The seed vector artifact and production requirements are committed in `aafa773`; graph loader is committed in `1ff53d7`; AI and devops changes remain uncommitted and require review before committing.
 - Files touched since last commit: `backend/app/ai/provider.py`, `backend/app/ai/spark.py`, `backend/tests/test_ai.py`, `scripts/smoke_spark.py` (AI agent editing); `DEPLOY.md`, `render.yaml`, `backend/Dockerfile` (devops); `handoff.md`. Vercel correction and context update are committed in `42d51fb`.
 - State: Mock backend at `http://127.0.0.1:8000` serves `/api/health` and `/docs` (200). G1 live smoke returned visible text and usage. Live Priya nudge and draft both generated non-degraded grounded text using `reasoning_effort=minimal` and 500 tokens. The prior draft 300-token limit truncated JSON after 267–274 reasoning tokens; a targeted 500-token draft passed. Fresh local mock TestClient health 200 with `torch_loaded=False`. Frontend 390×844 home render reviewed; production build passes outside sandbox. QA privacy fix passes and `.dockerignore` excludes `.env`/`.env.*`. Docker daemon unavailable.
-- Last command run + result: Render CORS preflight HTTP 200 with `Access-Control-Allow-Origin=https://porchlight-umber.vercel.app`; `/api/health` still mock/zero spend. Deployed mock probe passed Priya/Duval, draft/send, Reach 0.1538→0.1795, voice preview/pin and reset; Quarry map had 30 members, top gap South Wing, nudge candidate Imani. Local tests 28 passed and frontend build passed.
+- Last command run + result: hosted live Priya nudge `degraded=true` twice, fallback headline, no nudge usage. `/api/usage` total $0.00014 from one Voice call. Health reports live. First three-run script stopped safely and reset 200. Prior mock CORS/prep checks pass; local tests 28 passed and frontend build passed.
 
 ## Completed
 | Phase | Task | Verified by | Commit |
@@ -51,9 +51,10 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 | H1 | done; existing key explicitly accepted | Initial H1 and G1 passed. The human's 2026-10-25 IDE context exposed the Meta key value in chat. The human expressly declined rotation and authorized continued use of the existing key. Never reproduce the value; check only variable presence on Render before live mode. |
 | H2 | done | Six workshop answers recorded in `CONTEXT.md`. Official Contributor limits correct the workshop's standard-model limits. |
 | H3 | done | Five supplied JPG mockups converted to the exact PNG filenames. Frontend must match them. |
-| H5 | done | Human signed in, created projects, and supplied Render/Vercel HTTPS URLs. Backend health and frontend HTML both respond. CLI/browser automation remains unavailable; external HTTP checks work outside sandbox. |
-| H6 | not yet raised | Phone voice-post check after deployed URL exists. |
+| H5 | done | Human signed in, created projects, and supplied Render/Vercel HTTPS URLs. Backend is now live; CORS is fixed. CLI/browser automation remains unavailable; external HTTP checks work outside sandbox. |
+| H6 | open | Human was asked to try a 5-second voice post on one or two phones, including transcript/preview/pin, after the Spark reset loop stopped. |
 | H9 | approved | Human explicitly approved pushing Porchlight commits to GitHub origin and publishing the demo on Render Free and Vercel Hobby. No GCP, custom domain, or paid tier. |
+| H10 | open | Hosted Spark nudge degrades without metered usage while Voice recorded a charge. Asked human for the safe exception class/status from Render Logs; do not request secrets or headers. |
 
 ## Decisions & deviations from the guide
 | When | Decision | Why |
@@ -81,7 +82,7 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 Human confirmed H1 and `.env` contains the key and `muse-spark-1.3-contributor`. G1 passed: Spark returned visible text and a usage object. Live Priya nudge and draft now return non-degraded generated text with minimal reasoning and 500 tokens. H2 answers choose the standalone Meta API agent path and skip Graph API. Meta docs confirm Contributor pricing $0.10/M input, $0.20/M output, 150 RPM/3M TPM (https://dev.meta.ai/docs/pricing-rate-limits). Voice Path A is documented by Meta: multipart POST `/v1/asr/transcribe`, model `muse-voice-transcribe-1.0`, `request` JSON plus WAV `audio`, bearer header, 24 kHz mono 16-bit PCM, JSON `transcript`; pricing $0.18/hour (https://dev.meta.ai/docs/speech-to-text).
 
 ## Spend
-Live `/api/usage` total $0.0005699: smoke $0.000072 (3 calls), nudge $0.0002234 (2 calls), draft $0.0002745 (3 calls), cache hits 0. The first two smoke calls had empty visible text, the third passed G1. Cap $40; $10 reserve from the stated $50 credit. User confirmed H1.
+Local live `/api/usage` total $0.0005699: smoke $0.000072 (3 calls), nudge $0.0002234 (2 calls), draft $0.0002745 (3 calls), cache hits 0. Hosted Render `/api/usage` total $0.00014: Voice 1 call; hosted Spark attempts fell back before metering. Combined observed spend $0.0007099. The first two local smoke calls had empty visible text, the third passed G1. Cap $40; $10 reserve from the stated $50 credit. User confirmed H1.
 
 ## How to run
 From `backend`: `..\.tools\Python311\python.exe -m seed.generate_seed`; `..\.tools\Python311\python.exe -m app.seed_check`; `..\.tools\Python311\python.exe -m pytest -q tests --basetemp=..\.tools\pytest-p0-push`; `..\.tools\Python311\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000`. Python and the generation-only MiniLM model are in ignored `.tools/`; requirements are installed there. Runtime uses committed seed vectors and no Torch. `AI_MODE=mock` by default. G1 from repo root: set `$env:AI_MODE='live'`, run `.\.tools\Python311\python.exe scripts\smoke_spark.py`, then `Remove-Item Env:AI_MODE`; check `/api/usage`. From `frontend`: `npm.cmd install`; `npm.cmd run dev`; `npm.cmd run build`. Frontend build required sandbox escalation in session 2 because esbuild was denied reading Vite config. Dev frontend uses `http://localhost:5173` for backend CORS.
@@ -89,12 +90,12 @@ From `backend`: `..\.tools\Python311\python.exe -m seed.generate_seed`; `..\.too
 Deployment after H9: follow `DEPLOY.md`. Import root `render.yaml` as a Render Free Blueprint from the Git repo; the human enters `META_MODEL_API_KEY` in Render settings. Create Vercel Hobby project with Root Directory `frontend/` and `VITE_API_BASE` set to the Render HTTPS origin, then set Render `FRONTEND_ORIGIN` to the Vercel HTTPS origin. For the local seeded vectors, from `backend`: `..\.tools\Python311\python.exe seed/precompute_vectors.py`; re-run if the fictional seed changes. The Render image uses `requirements.deploy.txt`, ffmpeg, and the checked-in vectors.
 
 ## Deployed URLs
-Frontend: https://porchlight-umber.vercel.app/ ; backend health: https://porchlight-api-vsn3.onrender.com/api/health . Render currently reports `AI_MODE=mock`.
+Frontend: https://porchlight-umber.vercel.app/ ; backend health: https://porchlight-api-vsn3.onrender.com/api/health . Render currently reports `AI_MODE=live`.
 
 ## Known issues / bugs
 - Live Muse Voice, the deployed three-run G2 loop, and phone flow are not yet verified.
 - Computer-use browser inventory is empty in session 2; the 390px home screenshot was reviewed, while click-through UI testing remains for deployed H6.
-- Hosted CORS is fixed; Render remains in mock mode until the human sets `AI_MODE=live` with `META_MODEL_API_KEY` present. The human accepted continued use of the existing Meta key after its value appeared in IDE context.
+- Hosted CORS is fixed and Render is live. Spark nudge fails before usage accounting; Render Logs exception requested via H10. The human accepted continued use of the existing Meta key after its value appeared in IDE context.
 - Render Free spins down after 15 idle minutes and its local SQLite/cache disappear on restart; this also resets the per-instance cost ledger. Warm before demos, run three cache-hit loops within one active instance, and check Meta account spend externally.
 - Render Free memory is 512 MB. The slim image starts and responds to API checks, but sustained memory use has not been measured.
 - A stateless hosted instance can lose the local usage ledger on cold start. Reset demo and same-file restarts preserve it.
