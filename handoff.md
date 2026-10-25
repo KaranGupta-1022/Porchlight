@@ -8,7 +8,7 @@ G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after o
 
 ## Next up (do these in order)
 1. Fix live nudge output starvation in `backend/app/ai/provider.py` / `spark.py`, run one grounded Priya live check, inspect `/api/usage`, and switch back to mock.
-2. Commit the verified QA privacy fix and Docker secret exclusion; review and commit the Phase 8 frontend. Finish local browser interactions at 390px.
+2. Review and commit the Phase 8 frontend. The home screen passed a 390×844 render, but click-through browser automation is unavailable in this session; verify full UI interactions in the deployed phone check.
 3. Raise H5 for Vercel and backend host login/env setup once deployment artifacts and local UI are ready. Stay in P0 until deployed live G2 passes.
 
 ## In progress (exact state)
@@ -30,6 +30,7 @@ G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after o
 | 3 (QA fix) | Reject numbered exact addresses in invite title, activity, and place hint | 3 focused privacy cases; 24-test backend suite | `c57a09f` |
 | 9 (QA fix) | Exclude local `.env` secrets from backend Docker build context | `.dockerignore` inspected; Docker build pending daemon | `8999870` |
 | 5 (samples) | Ten fictional mock prompt/output pairs for nudges, drafts, and invite parsing | QA checked seed facts, safety wording, numbering, and JSON | pending commit |
+| 8 (implementation) | Vite React frontend, map, sheets, editable composer, voice preview, Reach animation, A/B toggle | `npm.cmd run build` passed; 390×844 home screenshot reviewed; Vite `/api` proxy passed | pending commit |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
@@ -74,6 +75,7 @@ None.
 ## Known issues / bugs
 - Phase 5 live Priya nudge returned `degraded=true` because the model used the entire 300-token budget on reasoning; a larger output budget must be tested.
 - Live Voice, deployed G2, and phone flow are not verified yet.
+- Computer-use browser inventory is empty in session 2; the 390px home screenshot was reviewed, while click-through UI testing remains for deployed H6.
 - A stateless hosted instance can lose the local usage ledger on cold start. Reset demo and same-file restarts preserve it.
 - Docker daemon is not running locally; the Dockerfile has not been built here.
 
