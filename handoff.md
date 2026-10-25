@@ -1,6 +1,6 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-25 01:30 America/Chicago by lead/session 3_
+_Last updated: 2026-10-25 01:32 America/Chicago by lead/session 3_
 _Current phase: 6, 9 — live Voice and P0 deployment | Gates passed: G1 ☑ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
@@ -8,15 +8,15 @@ G1 passed and local live Priya nudge/draft pass. The deployed mock loop and CORS
 
 ## Next up (do these in order)
 1. Obtain the sanitized `Meta Spark HTTP 404 feature=nudge ...` Render log line from the human (H10), then fix the specific hosted cause. New diagnostic commit `962b8c7` was deployed; hosted nudge still returned `degraded=true` and `/api/usage` was $0 on the fresh instance. The human replied that they will paste the line.
-2. Finish the Quarry P0 mock Voice fallback fix in `backend/app/ai/` so Quarry preview does not suggest Hyde Park's Avenue G. After hosted Spark is fixed, re-run three deployed live loops with reset/cache-hit checks and inspect `/api/usage`. Stay in P0 until G2 passes.
+2. Commit the locally verified Quarry P0 mock Voice fallback fix in `backend/app/ai/`; push it with the hosted Spark root-cause fix to avoid a separate Render manual deploy. After hosted Spark is fixed, re-run three deployed live loops with reset/cache-hit checks and inspect `/api/usage`. Stay in P0 until G2 passes.
 3. After G2, continue G2→P1→P2 in guide scope order if event time permits.
 
 ## In progress (exact state)
 - Task: Diagnose hosted Spark 404. Safe diagnostic code in `backend/app/ai/provider.py` trims model/base outer whitespace and logs only booleans for expected model, base, and Chat Completions path plus OpenAI SDK version, key presence, and 404 feature. It never logs a key, model value, URL, prompt, response body, or exception text. Human confirmed `MUSE_SPARK_MODEL`, `META_API_BASE`, and the key match local. Code `962b8c7` was manually deployed. New hosted nudge remained degraded; human will supply log line.
 - Continuity note: context was compacted again at the start of session 3. Read `AGENTS.md`, this handoff, relevant guide sections, and `CONTEXT.md`; compared git log/status. Commits through `60b550f` are complete. Only original human untracked guide/instruction files and design JPGs remain; no half-done tracked edits. Prior stale note about uncommitted AI/devops files was obsolete and removed.
-- Files touched since last commit: `handoff.md` only; ai-integration subagent is starting a Quarry mock Voice fallback fix. Ignored `.tools/quarry_mock_probe.py` was created by QA.
+- Files touched since last commit: `backend/app/ai/spark.py`, `backend/app/ai/fixtures/parse_invite.json`, `backend/app/ai/fixtures/transcript.json`, `backend/tests/test_ai.py`, and `handoff.md`. The ai-integration subagent finished the Quarry mock Voice fallback fix. Ignored `.tools/quarry_mock_probe.py` was created by QA.
 - State: Mock backend at `http://127.0.0.1:8000` serves `/api/health` and `/docs` (200). G1 live smoke returned visible text and usage. Live Priya nudge and draft both generated non-degraded grounded text using `reasoning_effort=minimal` and 500 tokens. The prior draft 300-token limit truncated JSON after 267–274 reasoning tokens; a targeted 500-token draft passed. Fresh local mock TestClient health 200 with `torch_loaded=False`. Frontend 390×844 home render reviewed; production build passes outside sandbox. QA privacy fix passes and `.dockerignore` excludes `.env`/`.env.*`. Docker daemon unavailable.
-- Last command run + result: one fresh local provider Spark check reached Meta and was billed $0.0000424 but returned no visible text at 200 max tokens; local total now $0.0006123. New hosted nudge after Render deploy: health 200 live, nudge 200 `degraded=true`, fresh-instance `/api/usage` $0. QA Quarry mock loop passed South Wing 0/8 to 1/8, overall 5/29 to 6/29, voice edited/posted, reset and A/B schema checks, but identified wrong mock voice place hint.
+- Last command run + result: after Quarry fix, ai-integration ran focused AI tests 10 passed and full backend tests 29 passed. Lead re-ran `.tools/quarry_mock_probe.py`: full mock loop and A/B schema passed; Quarry preview has no Hyde Park place hint; Reach 5/29 to 6/29 and South Wing 0/8 to 1/8. New hosted nudge after Render diagnostics deploy remained `degraded=true`; fresh-instance `/api/usage` $0. Human was asked for the specific sanitized Meta Spark line after sending a normal `GET /` 404 line.
 
 ## Completed
 | Phase | Task | Verified by | Commit |
@@ -41,6 +41,7 @@ G1 passed and local live Priya nudge/draft pass. The deployed mock loop and CORS
 | 9 (hosted mock check) | Render/Vercel URLs, CORS, both communities, A core loop and voice pin/reset | Public health/HTML 200; CORS preflight 200; `.tools/deployed_mock_probe.py` passed; Quarry map/gap/nudge passed | host config, no code commit |
 | 9 (Spark diagnostic) | Sanitize 404 logs while checking Render model/base/path and SDK version | Synthetic 404 fallback/redaction; AI tests 9 passed; full backend tests 28 passed; local Uvicorn health/docs 200; seed check passed; pushed to GitHub | `962b8c7` |
 | 9 (Quarry mock check) | Community B gap, nudge, edit/send, mark met, voice preview/confirm, reset, A/B schema | `.tools/quarry_mock_probe.py` passed; wrong mock Voice place hint found for fix | probe ignored, no commit |
+| 6/9 (Quarry Voice fallback) | Location-neutral mock transcript and seed-specific public place hint for each community | Focused AI tests 10 passed; full backend tests 29 passed; Quarry mock probe passed with no Avenue G in Quarry preview | pending commit |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
@@ -96,7 +97,7 @@ Deployment after H9: follow `DEPLOY.md`. Import root `render.yaml` as a Render F
 Frontend: https://porchlight-umber.vercel.app/ ; backend health: https://porchlight-api-vsn3.onrender.com/api/health . Render currently reports `AI_MODE=live`.
 
 ## Known issues / bugs
-- Two-phone Voice posting UI passed, and Voice billed two live transcriptions. Spark invite parsing still fell back due hosted 404; deployed three-run G2 loop has not passed. Quarry mock Voice preview carries Hyde Park's `near Avenue G` hint; fix in progress.
+- Two-phone Voice posting UI passed, and Voice billed two live transcriptions. Spark invite parsing still fell back due hosted 404; deployed three-run G2 loop has not passed. Quarry mock Voice preview previously carried Hyde Park's `near Avenue G` hint; local fix is verified and awaits commit/deployment.
 - Computer-use browser inventory is empty in session 2; the 390px home screenshot was reviewed, while click-through UI testing remains for deployed H6.
 - Hosted CORS is fixed and Render is live. Spark nudge and parse_invite fail with `NotFoundError` before usage accounting even though the human confirmed Render model/base/key match local; H10 root-cause diagnosis remains open. The human accepted continued use of the existing Meta key after its value appeared in IDE context.
 - Render Free spins down after 15 idle minutes and its local SQLite/cache disappear on restart; this also resets the per-instance cost ledger. Warm before demos, run three cache-hit loops within one active instance, and check Meta account spend externally.

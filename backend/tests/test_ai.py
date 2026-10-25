@@ -198,4 +198,31 @@ def test_mock_ai_routes_work_without_key(monkeypatch, tmp_path):
         )
         assert voice_preview.status_code == 200, voice_preview.text
         assert voice_preview.json()["parsed"]["capacity"] == 4
+        assert voice_preview.json()["parsed"]["place_hint"] == "near Avenue G"
+        quarry_preview = client.post(
+            "/api/voice/invite", data={"community_id": "quarry"},
+            files={"audio": ("sample.webm", b"mock-only", "audio/webm")},
+        )
+        assert quarry_preview.status_code == 200, quarry_preview.text
+        assert quarry_preview.json()["parsed"]["place_hint"] == "courtyard"
+        assert "Avenue G" not in str(quarry_preview.json())
         assert client.get("/api/usage").json()["total_usd"] == 0
+
+
+def test_quarry_degraded_voice_preview_uses_seed_place(monkeypatch, tmp_path):
+    from fastapi.testclient import TestClient
+    from app.main import app
+
+    monkeypatch.setenv("AI_MODE", "live")
+    monkeypatch.delenv("META_MODEL_API_KEY", raising=False)
+    monkeypatch.setenv("PORCHLIGHT_DB_PATH", str(tmp_path / "demo.db"))
+    monkeypatch.setenv("AI_CACHE_DIR", str(tmp_path / "cache"))
+    with TestClient(app) as client:
+        preview = client.post(
+            "/api/voice/invite", data={"community_id": "quarry"},
+            files={"audio": ("sample.webm", b"mock-only", "audio/webm")},
+        )
+        assert preview.status_code == 200, preview.text
+        assert preview.json()["degraded"] is True
+        assert preview.json()["parsed"]["place_hint"] == "courtyard"
+        assert "Avenue G" not in str(preview.json())

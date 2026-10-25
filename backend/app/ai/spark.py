@@ -10,6 +10,7 @@ from typing import Any, Mapping
 from pydantic import BaseModel, Field, ValidationError
 
 from app.ai import provider
+from app.db import SEED_DIR
 from app.models import Nudge, ParsedInvite
 
 
@@ -144,8 +145,27 @@ def draft_message(you: Any, recipient: Any, context: str = "",
     return parsed.text, degraded
 
 
+def _seed_place_hint(host: Any) -> str:
+    """Use a public seed hint; community differences stay in seed data."""
+    community_id = str(_dict(host).get("community_id", ""))
+    if not re.fullmatch(r"[a-z0-9_-]+", community_id):
+        return "a public meeting spot"
+    try:
+        seed = json.loads((SEED_DIR / f"{community_id}.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return "a public meeting spot"
+    if seed.get("community", {}).get("id") != community_id:
+        return "a public meeting spot"
+    for invite in seed.get("invites", []):
+        place_hint = invite.get("place_hint")
+        if isinstance(place_hint, str) and place_hint.strip():
+            return place_hint.strip()
+    return "a public meeting spot"
+
+
 def parse_invite(transcript: str, you: Any, now: datetime) -> tuple[ParsedInvite, bool]:
     fallback = provider.fixture("parse_invite")
+    fallback["place_hint"] = _seed_place_hint(you)
     request = {"transcript": transcript[:1000], "host": _member(you),
                "now": now.isoformat(),
                "schema": {"title": "string", "activity": "string",
