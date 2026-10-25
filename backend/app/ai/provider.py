@@ -14,6 +14,7 @@ import wave
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from threading import Lock
 from typing import Any
 from contextlib import closing
 from importlib.metadata import PackageNotFoundError, version
@@ -30,6 +31,8 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures"
 load_dotenv(ROOT / ".env")
 load_dotenv(ROOT / "backend" / ".env", override=False)
 LOG = logging.getLogger(__name__)
+_CATALOG_DIAGNOSTIC_DONE = False
+_CATALOG_DIAGNOSTIC_LOCK = Lock()
 
 
 @dataclass(frozen=True)
@@ -176,6 +179,39 @@ def _chat_path_expected(error: Exception) -> bool | None:
         return False
 
 
+def _model_not_found_code(error: Exception) -> bool | None:
+    code = getattr(error, "code", None)
+    if code is None:
+        body = getattr(error, "body", None)
+        if isinstance(body, dict):
+            nested = body.get("error")
+            code = nested.get("code") if isinstance(nested, dict) else body.get("code")
+    return code == "model_not_found" if isinstance(code, str) else None
+
+
+def _log_model_catalog_once(client: Any) -> None:
+    """Probe model access once after a Spark 404; never log catalog contents."""
+    global _CATALOG_DIAGNOSTIC_DONE
+    with _CATALOG_DIAGNOSTIC_LOCK:
+        if _CATALOG_DIAGNOSTIC_DONE:
+            return
+        _CATALOG_DIAGNOSTIC_DONE = True
+    try:
+        catalog = client.models.list()
+        ids = {item.id for item in catalog.data if isinstance(getattr(item, "id", None), str)}
+        LOG.warning(
+            "Meta model catalog status=ok contributor_listed=%s standard_listed=%s",
+            "muse-spark-1.3-contributor" in ids, "muse-spark-1.3" in ids,
+        )
+    except Exception as exc:
+        status = getattr(exc, "status_code", None)
+        LOG.warning(
+            "Meta model catalog status=%s contributor_listed=unknown "
+            "standard_listed=unknown error_class=%s",
+            status if isinstance(status, int) else "unknown", type(exc).__name__,
+        )
+
+
 def complete(messages: list[dict[str, Any]], *, feature: str,
              fallback: str, max_tokens: int = 300,
              model: str | None = None,
@@ -199,6 +235,7 @@ def complete(messages: list[dict[str, Any]], *, feature: str,
     if not key:
         LOG.warning("Meta key unavailable for %s", feature)
         return _fallback(feature, model, fallback, path)
+    client = None
     try:
         from openai import OpenAI
 
@@ -234,13 +271,16 @@ def complete(messages: list[dict[str, Any]], *, feature: str,
             LOG.warning(
                 "Meta Spark HTTP 404 feature=%s model_expected=%s "
                 "model_outer_whitespace=%s model_quote_wrapped=%s base_expected=%s "
-                "chat_path_expected=%s sdk_version=%s key_present=%s",
+                "chat_path_expected=%s sdk_version=%s key_present=%s "
+                "model_not_found_code=%s",
                 feature, model == "muse-spark-1.3-contributor",
                 raw_model != model, _quoted(model),
                 _expected_meta_base(os.getenv("META_API_BASE", "https://api.meta.ai/v1")),
                 _chat_path_expected(exc), _sdk_version(),
-                bool(key),
+                bool(key), _model_not_found_code(exc),
             )
+            if client is not None:
+                _log_model_catalog_once(client)
         else:
             LOG.warning("Meta request failed for %s: %s", feature, type(exc).__name__)
         return _fallback(feature, model, fallback, path)

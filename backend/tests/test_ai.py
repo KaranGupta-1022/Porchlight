@@ -132,6 +132,101 @@ def test_live_response_is_metered_then_cached(monkeypatch, tmp_path):
     assert all(UUID(value).version == 4 for value in ids)
 
 
+def test_spark_404_catalog_probe_is_once_and_redacted(monkeypatch, tmp_path, caplog):
+    import logging
+    import openai
+
+    monkeypatch.setenv("AI_MODE", "live")
+    monkeypatch.setenv("META_MODEL_API_KEY", "private-key-sentinel")
+    monkeypatch.setenv("MUSE_SPARK_MODEL", "muse-spark-1.3-contributor")
+    monkeypatch.setenv("META_API_BASE", "https://api.meta.ai/v1")
+    monkeypatch.setenv("COST_CAP_USD", "40")
+    monkeypatch.setenv("AI_CACHE_DIR", str(tmp_path / "cache"))
+    monkeypatch.setenv("PORCHLIGHT_DB_PATH", str(tmp_path / "demo.db"))
+    monkeypatch.setattr(provider, "_CATALOG_DIAGNOSTIC_DONE", False)
+    reset_demo()
+    counts = {"chat": 0, "catalog": 0}
+
+    class Chat404(Exception):
+        status_code = 404
+        code = "model_not_found"
+        body = {"error": {"message": "private-response-sentinel"}}
+
+    def chat_create(**kwargs):
+        counts["chat"] += 1
+        raise Chat404("private-response-sentinel")
+
+    def list_models():
+        counts["catalog"] += 1
+        return SimpleNamespace(data=[
+            SimpleNamespace(id="muse-spark-1.3-contributor"),
+            SimpleNamespace(id="muse-spark-1.3"),
+            SimpleNamespace(id="private-catalog-sentinel"),
+        ])
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            self.chat = SimpleNamespace(completions=SimpleNamespace(create=chat_create))
+            self.models = SimpleNamespace(list=list_models)
+
+    monkeypatch.setattr(openai, "OpenAI", FakeOpenAI)
+    with caplog.at_level(logging.WARNING, logger=provider.LOG.name):
+        first = provider.complete([{"role": "user", "content": "private-prompt-sentinel"}],
+                                  feature="nudge", fallback="offline")
+        second = provider.complete([{"role": "user", "content": "private-prompt-sentinel"}],
+                                   feature="nudge", fallback="offline")
+    assert first.degraded and second.degraded
+    assert counts == {"chat": 2, "catalog": 1}
+    assert "contributor_listed=True standard_listed=True" in caplog.text
+    assert "model_not_found_code=True" in caplog.text
+    assert all(sentinel not in caplog.text for sentinel in (
+        "private-key-sentinel", "private-response-sentinel",
+        "private-prompt-sentinel", "private-catalog-sentinel"))
+    assert provider.total_spend() == 0
+
+
+def test_spark_404_catalog_error_logs_only_status_and_class(monkeypatch, tmp_path, caplog):
+    import logging
+    import openai
+
+    monkeypatch.setenv("AI_MODE", "live")
+    monkeypatch.setenv("META_MODEL_API_KEY", "private-key-sentinel")
+    monkeypatch.setenv("COST_CAP_USD", "40")
+    monkeypatch.setenv("AI_CACHE_DIR", str(tmp_path / "cache"))
+    monkeypatch.setenv("PORCHLIGHT_DB_PATH", str(tmp_path / "demo.db"))
+    monkeypatch.setattr(provider, "_CATALOG_DIAGNOSTIC_DONE", False)
+    reset_demo()
+
+    class Chat404(Exception):
+        status_code = 404
+
+    class Catalog403(Exception):
+        status_code = 403
+
+    def fail_chat(**kwargs):
+        raise Chat404("private-response-sentinel")
+
+    def fail_catalog():
+        raise Catalog403("private-catalog-sentinel")
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            self.chat = SimpleNamespace(completions=SimpleNamespace(create=fail_chat))
+            self.models = SimpleNamespace(list=fail_catalog)
+
+    monkeypatch.setattr(openai, "OpenAI", FakeOpenAI)
+    with caplog.at_level(logging.WARNING, logger=provider.LOG.name):
+        result = provider.complete([{"role": "user", "content": "private-prompt-sentinel"}],
+                                   feature="nudge", fallback="offline")
+    assert result.degraded
+    assert "Meta model catalog status=403 contributor_listed=unknown " \
+           "standard_listed=unknown error_class=Catalog403" in caplog.text
+    assert "model_not_found_code=None" in caplog.text
+    assert all(sentinel not in caplog.text for sentinel in (
+        "private-key-sentinel", "private-response-sentinel",
+        "private-prompt-sentinel", "private-catalog-sentinel"))
+
+
 def test_voice_uses_documented_batch_request_and_audio_meter(monkeypatch, tmp_path):
     monkeypatch.setenv("AI_MODE", "live")
     monkeypatch.setenv("META_MODEL_API_KEY", "unit-test-only")
