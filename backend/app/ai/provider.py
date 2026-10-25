@@ -16,6 +16,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from contextlib import closing
+from importlib.metadata import PackageNotFoundError, version
+from urllib.parse import urlsplit
 
 from dotenv import load_dotenv
 
@@ -142,12 +144,45 @@ def _reserve_estimate(messages: list[dict[str, Any]], max_tokens: int) -> float:
             + max_tokens * _price("PRICE_OUT_PER_M", 0.20)) / 1_000_000
 
 
+def _expected_meta_base(value: str) -> bool:
+    """Check the configured endpoint without exposing its URL in logs."""
+    try:
+        parsed = urlsplit(value.strip())
+    except ValueError:
+        return False
+    return (parsed.scheme == "https" and parsed.hostname == "api.meta.ai"
+            and parsed.path.rstrip("/") == "/v1" and not parsed.username
+            and not parsed.password and not parsed.query and not parsed.fragment)
+
+
+def _quoted(value: str) -> bool:
+    return len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"')
+
+
+def _sdk_version() -> str:
+    try:
+        return version("openai")
+    except PackageNotFoundError:
+        return "unavailable"
+
+
+def _chat_path_expected(error: Exception) -> bool | None:
+    url = getattr(getattr(error, "request", None), "url", None)
+    if url is None:
+        return None
+    try:
+        return urlsplit(str(url)).path.rstrip("/") == "/v1/chat/completions"
+    except ValueError:
+        return False
+
+
 def complete(messages: list[dict[str, Any]], *, feature: str,
              fallback: str, max_tokens: int = 300,
              model: str | None = None,
              reasoning_effort: str = "minimal") -> ProviderResult:
     """Return raw Spark text. A caller may validate JSON and retry once."""
-    model = model or os.getenv("MUSE_SPARK_MODEL", "muse-spark-1.3-contributor")
+    raw_model = model or os.getenv("MUSE_SPARK_MODEL", "muse-spark-1.3-contributor")
+    model = raw_model.strip()
     params: dict[str, Any] = {"max_tokens": max_tokens,
                               "reasoning_effort": reasoning_effort}
     path = _cache_path(model, messages, params)
@@ -167,8 +202,9 @@ def complete(messages: list[dict[str, Any]], *, feature: str,
     try:
         from openai import OpenAI
 
+        base_url = os.getenv("META_API_BASE", "https://api.meta.ai/v1").strip()
         client = OpenAI(api_key=key,
-                        base_url=os.getenv("META_API_BASE", "https://api.meta.ai/v1"),
+                        base_url=base_url,
                         timeout=15.0, max_retries=0)
         response = client.chat.completions.create(
             model=model, messages=messages, max_tokens=max_tokens,
@@ -194,7 +230,19 @@ def complete(messages: list[dict[str, Any]], *, feature: str,
         _write_cache(path, {"value": value, "usage": usage})
         return ProviderResult(value, usage=usage)
     except Exception as exc:
-        LOG.warning("Meta request failed for %s: %s", feature, type(exc).__name__)
+        if getattr(exc, "status_code", None) == 404:
+            LOG.warning(
+                "Meta Spark HTTP 404 feature=%s model_expected=%s "
+                "model_outer_whitespace=%s model_quote_wrapped=%s base_expected=%s "
+                "chat_path_expected=%s sdk_version=%s key_present=%s",
+                feature, model == "muse-spark-1.3-contributor",
+                raw_model != model, _quoted(model),
+                _expected_meta_base(os.getenv("META_API_BASE", "https://api.meta.ai/v1")),
+                _chat_path_expected(exc), _sdk_version(),
+                bool(key),
+            )
+        else:
+            LOG.warning("Meta request failed for %s: %s", feature, type(exc).__name__)
         return _fallback(feature, model, fallback, path)
 
 

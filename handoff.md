@@ -1,22 +1,22 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-25 01:08 America/Chicago by lead/session 3_
+_Last updated: 2026-10-25 01:11 America/Chicago by lead/session 3_
 _Current phase: 6, 9 — live Voice and P0 deployment | Gates passed: G1 ☑ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
-G1 passed and local live Priya nudge/draft pass. The deployed mock loop and CORS pass. Render is live, but hosted Spark nudge and invite parsing raise `NotFoundError` (404), so both use fallbacks. Two-phone Voice UI worked and Render billed two Voice calls ($0.000268). Human confirmed the Render model, base URL, and key match local; G2 remains open.
+G1 passed and local live Priya nudge/draft pass. The deployed mock loop and CORS pass. Render is live, but hosted Spark nudge and invite parsing raise `NotFoundError` (404), so both use fallbacks. Two-phone Voice UI worked. Safe provider diagnostics are tested locally and ready for Render deployment; G2 remains open.
 
 ## Next up (do these in order)
-1. Diagnose hosted Spark 404 in `backend/app/ai/provider.py`: add sanitized status, Meta error code, model and URL path logging without keys, prompts, or response bodies. Verify with focused tests, commit, push, and have Render deploy. Human already confirmed the three Render environment values match local.
-2. Trigger one hosted nudge, inspect the safe Render error details via H10, and fix the cause. Re-run the three hosted live loops with reset and cache-hit checks; inspect `/api/usage`. H6 two-phone Voice UI test is done. Stay in P0 until G2 passes.
+1. Commit and push the safe 404 diagnostics in `backend/app/ai/provider.py`, then ask the human to manually deploy the latest GitHub commit in Render (auto deploy is off). After deploy, trigger one hosted nudge and obtain the sanitized Render diagnostic log via H10.
+2. Fix the observed cause of hosted Spark 404. Re-run the three hosted live loops with reset and cache-hit checks; inspect `/api/usage`. H6 two-phone Voice UI test is done. Stay in P0 until G2 passes.
 3. After G2, continue G2→P1→P2 in guide scope order if event time permits.
 
 ## In progress (exact state)
-- Task: Diagnose hosted Spark 404. `.tools/deployed_live_probe.py` stopped on run-1 nudge `degraded=true` and final reset 200; a second nudge also degraded. Render Logs show `Meta request failed for nudge: NotFoundError` and `parse_invite: NotFoundError`; neither metered Spark. Human completed H6 on two phones; hosted usage has two Voice calls. Human confirmed `MUSE_SPARK_MODEL`, `META_API_BASE`, and the key match local. CORS and mock loops pass; H9 approved.
+- Task: Diagnose hosted Spark 404. Safe diagnostic code in `backend/app/ai/provider.py` trims model/base outer whitespace and logs only booleans for expected model, base, and Chat Completions path plus OpenAI SDK version, key presence, and 404 feature. It never logs a key, model value, URL, prompt, response body, or exception text. Human confirmed `MUSE_SPARK_MODEL`, `META_API_BASE`, and the key match local. Render has not received this diagnostic code yet.
 - Continuity note: context was compacted again at the start of session 3. Read `AGENTS.md`, this handoff, relevant guide sections, and `CONTEXT.md`; compared git log/status. Commits through `60b550f` are complete. Only original human untracked guide/instruction files and design JPGs remain; no half-done tracked edits. Prior stale note about uncommitted AI/devops files was obsolete and removed.
-- Files touched since last commit: `handoff.md` only. The ai-integration subagent is investigating safe provider diagnostics and owns `backend/app/ai/`.
+- Files touched since last commit: `backend/app/ai/provider.py` and `handoff.md`. The ai-integration subagent completed the provider edit without committing.
 - State: Mock backend at `http://127.0.0.1:8000` serves `/api/health` and `/docs` (200). G1 live smoke returned visible text and usage. Live Priya nudge and draft both generated non-degraded grounded text using `reasoning_effort=minimal` and 500 tokens. The prior draft 300-token limit truncated JSON after 267–274 reasoning tokens; a targeted 500-token draft passed. Fresh local mock TestClient health 200 with `torch_loaded=False`. Frontend 390×844 home render reviewed; production build passes outside sandbox. QA privacy fix passes and `.dockerignore` excludes `.env`/`.env.*`. Docker daemon unavailable.
-- Last command run + result: `git log --oneline -20` and `git status --short` show commits through `60b550f` and no tracked edits; relevant guide and context read. Prior hosted `/api/usage` total $0.000268 from two Voice calls, no Spark calls; Render Logs show `NotFoundError` for nudge and parse_invite. Hosted live nudge degraded twice; first three-run script stopped safely and reset 200. Local tests previously 28 passed and frontend build passed.
+- Last command run + result: full backend `pytest -q tests --basetemp=..\\.tools\\pytest-render-404` passed 28 tests; local Uvicorn `/api/health` (mock) and `/docs` returned 200; `python -m app.seed_check` passed with Duval 0/6 and South Wing 0/8. Provider diff passed `git diff --check`. Prior hosted `/api/usage` total $0.000268 from two Voice calls, no Spark calls.
 
 ## Completed
 | Phase | Task | Verified by | Commit |
@@ -39,6 +39,7 @@ G1 passed and local live Priya nudge/draft pass. The deployed mock loop and CORS
 | 9 (Render deployment) | Render Free Blueprint, slim Dockerfile, Vercel setup instructions | YAML/static checks, local health 200 without Torch; hosted build pending | `3eb6ea3` |
 | 9 (publication prep) | Pushed P0 source to GitHub for Render/Vercel imports | `git push origin main` succeeded to `50a3977`; `.env` untracked/ignored | `50a3977` |
 | 9 (hosted mock check) | Render/Vercel URLs, CORS, both communities, A core loop and voice pin/reset | Public health/HTML 200; CORS preflight 200; `.tools/deployed_mock_probe.py` passed; Quarry map/gap/nudge passed | host config, no code commit |
+| 9 (Spark diagnostic) | Sanitize 404 logs while checking Render model/base/path and SDK version | Synthetic 404 fallback/redaction; AI tests 9 passed; full backend tests 28 passed; local Uvicorn health/docs 200; seed check passed | pending commit |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
@@ -54,7 +55,7 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 | H5 | done | Human signed in, created projects, and supplied Render/Vercel HTTPS URLs. Backend is now live; CORS is fixed. CLI/browser automation remains unavailable; external HTTP checks work outside sandbox. |
 | H6 | done (UI path) | Human reported Voice post worked on two phones. Hosted Voice transcribed twice and billed; Spark `parse_invite` used fallback due 404, so the fully live AI voice-to-pin G2 criterion remains open. |
 | H9 | approved | Human explicitly approved pushing Porchlight commits to GitHub origin and publishing the demo on Render Free and Vercel Hobby. No GCP, custom domain, or paid tier. |
-| H10 | open (hosted Spark 404) | Human supplied Render Logs showing `NotFoundError` for nudge and parse_invite, then confirmed Spark model ID, base URL, and key match the working local `.env`. Next: sanitized provider diagnostics, redeploy, one hosted call. No secrets requested. |
+| H10 | open (hosted Spark 404) | Human supplied Render Logs showing `NotFoundError` for nudge and parse_invite, then confirmed Spark model ID, base URL, and key match the working local `.env`. Safe provider diagnostics are ready locally; next manually deploy and inspect one sanitized hosted log line. No secrets requested. |
 
 ## Decisions & deviations from the guide
 | When | Decision | Why |
@@ -77,6 +78,7 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 | 2026-10-24 | Cancel optional gcloud CLI download and remove its partial ignored archive. | GCP is no longer the selected host; download was still in progress and no credentials were used. |
 | 2026-10-25 | Precompute MiniLM interest vectors for fictional seed residents and load them without Torch in Render Free runtime; trim production dependencies and skip Docker build-time MiniLM download. | Official Render Free plan has 512 MB RAM / 0.1 CPU (https://render.com/docs/compute-plans). Local Torch/MiniLM process reserved roughly 1.5 GB, likely exceeding free RAM. Precomputed normalized vectors preserve the guide's MiniLM interest similarity for fixed fictional seeds; this is a Phase 4/9 implementation deviation to keep P0 working on the chosen free host. |
 | 2026-10-25 | Continue using the existing Meta key after its value appeared in IDE context. | The human explicitly replied that it was fine to use the key. Do not quote or record its value. |
+| 2026-10-25 | Log only booleans for Spark model/base/path configuration and the SDK version on hosted HTTP 404. | The prior exception-class log cannot distinguish a malformed Render setting from a model entitlement issue; arbitrary error bodies could contain sensitive data. |
 
 ## Meta API facts confirmed
 Human confirmed H1 and `.env` contains the key and `muse-spark-1.3-contributor`. G1 passed: Spark returned visible text and a usage object. Live Priya nudge and draft now return non-degraded generated text with minimal reasoning and 500 tokens. H2 answers choose the standalone Meta API agent path and skip Graph API. Meta docs confirm Contributor pricing $0.10/M input, $0.20/M output, 150 RPM/3M TPM (https://dev.meta.ai/docs/pricing-rate-limits). Voice Path A is documented by Meta: multipart POST `/v1/asr/transcribe`, model `muse-voice-transcribe-1.0`, `request` JSON plus WAV `audio`, bearer header, 24 kHz mono 16-bit PCM, JSON `transcript`; pricing $0.18/hour (https://dev.meta.ai/docs/speech-to-text).
