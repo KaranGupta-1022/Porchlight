@@ -186,16 +186,26 @@ def _insert_seed(connection: sqlite3.Connection, seed: dict[str, Any]) -> None:
 
 
 def reset_demo(db_path: str | Path | None = None) -> None:
-    """Drop and reseed both communities. Called at app startup and by demo reset."""
+    """Reseed demo data while retaining the cost meter in a persistent DB file."""
     seeds = [json.loads((SEED_DIR / f"{name}.json").read_text(encoding="utf-8"))
              for name in ("hydepark", "quarry")]
     with closing(get_connection(db_path)) as connection:
+        has_usage = connection.execute(
+            "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'api_usage'"
+        ).fetchone() is not None
+        prior_usage = (
+            [tuple(row) for row in connection.execute("SELECT * FROM api_usage")]
+            if has_usage else []
+        )
         with connection:
             for table in DROP_ORDER:
                 connection.execute(f"DROP TABLE IF EXISTS {table}")
             connection.executescript(SCHEMA)
             for seed in seeds:
                 _insert_seed(connection, seed)
+            connection.executemany(
+                "INSERT INTO api_usage VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", prior_usage
+            )
 
 
 def fuzz_coordinates(lat: float, lng: float, stable_id: str) -> tuple[float, float]:

@@ -114,3 +114,18 @@ def test_public_serializers_hide_private_locations(tmp_path: Path) -> None:
         public = public_invite(invite)
         assert "exact_location" not in public
         assert (public["lat"], public["lng"]) != (invite["lat"], invite["lng"])
+
+
+def test_reset_preserves_usage_cost_meter(tmp_path: Path) -> None:
+    db_path = tmp_path / "demo.db"
+    reset_demo(db_path)
+    with get_connection(db_path) as connection:
+        connection.execute(
+            """INSERT INTO api_usage VALUES
+               ('usage-1', '2026-10-24T23:00:00-05:00', 'nudge', 'muse-spark',
+                100, 50, 0, 0.04, 0)"""
+        )
+    reset_demo(db_path)
+    with get_connection(db_path) as connection:
+        assert connection.execute("SELECT SUM(usd) FROM api_usage").fetchone()[0] == 0.04
+        assert connection.execute("SELECT COUNT(*) FROM api_usage").fetchone()[0] == 1

@@ -1,27 +1,29 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-24 23:10 America/Chicago by lead/session 1_
-_Current phase: 3–5 — P0 API, graph, AI | Gates passed: G1 ☐ G2 ☐ G3 ☐ G4 ☐_
+_Last updated: 2026-10-24 23:18 America/Chicago by lead/session 1_
+_Current phase: 5–9 — P0 AI, voice, frontend, deployment | Gates passed: G1 ☐ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
-Bootstrap and Phase 2 seed are written and checked. H2/H3 are done; H1 was deferred by the human. Python 3.11.9 runs from ignored `.tools/Python311`; dependencies are installing. All product work stays in mock mode until Meta access is verified.
+Phase 2–4 backend and graph work in mock mode; 21 backend tests pass. AI/voice code is implemented but live checks await H1. Frontend is in progress. H2/H3 are done; H1 was deferred by the human.
 
 ## Next up (do these in order)
-1. Finish and verify Phase 3 API, Phase 4 graph, and Phase 5 AI against `models.py`/`API_SCHEMA.md`.
-2. Finish Phase 6 voice from Meta's documented batch endpoint and Phase 8 frontend, then run the local P0 loop.
-3. Prepare deploy artifacts and raise H5 only when a concrete deployment is ready for login/env setup.
+1. Commit reviewed Phase 3 API and Phase 4 graph; commit Phase 5–6 mock AI/voice implementation with live verification explicitly pending H1.
+2. Finish Phase 8 frontend and run the local P0 loop at 390px with mock backend.
+3. Finish Phase 9 deploy artifacts, then raise H5 when a concrete deployment is ready for login/env setup.
 
 ## In progress (exact state)
-- Task: Phase 3 API, Phase 4 graph, Phase 5–6 AI, Phase 8 frontend in progress.
-- Files touched since last commit: `.env.example`, `.gitignore`, `CONTEXT.md`, `handoff.md`, `backend/app/db.py`, `seed_check.py`, `seed/generate_seed.py`, seed JSONs, `backend/tests/test_api_seed.py`, `backend/requirements.txt`, five design PNGs.
-- State: Phase 2 tests pass; Python dependencies are installing. API, AI, frontend agents are editing their owned files. `graph.py` and tests exist; MiniLM local model preparation remains.
-- Last command run + result: `..\.tools\Python311\python.exe -m pytest -q tests/test_graph.py --basetemp=..\.tools\pytest-graph-1` from backend: 4 passed. Seed checks: Duval 0/6 and South Wing 0/8, each top gap. Backend agent added spend-preserving reset; 5 seed tests passed.
+- Task: Frontend build and local P0 integration. API, graph, and mock AI/voice are ready for commit.
+- Files touched since last commit: backend API/AI/graph modules and tests, `backend/Dockerfile`, `backend/.dockerignore`, `DEPLOY.md`, frontend files in progress.
+- State: Backend dependencies installed in ignored workspace Python; 21 backend tests pass. MiniLM model saved in ignored `.tools/all-MiniLM-L6-v2` and loaded without network; Priya ranks first. Live checks await H1.
+- Last command run + result: `..\.tools\Python311\python.exe -m pytest -q tests --basetemp=..\.tools\pytest-full-p0-1` from backend: 21 passed, one Starlette/anyio deprecation warning. A real ffmpeg conversion produced mono 16-bit 24 kHz WAV.
 
 ## Completed
 | Phase | Task | Verified by | Commit |
 |---|---|---|---|
 | 1 | Bootstrap, shared contracts, mock fixtures, design prompts | File checks; JSON parse; Python import pending runtime | `ad81c57` |
 | 2 | Deterministic A/B seeds, SQLite reseed, public serializers | Seed check; 4 focused tests passed | `744f1fb` |
+| 3 | P0 mock API routes, public serializers, spend-preserving reset | HTTP app checks; 21-test backend suite | pending commit |
+| 4 | Reach, gaps, bridge scoring with local MiniLM | 4 graph tests; actual MiniLM loaded and ranked Priya first | pending commit |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
@@ -54,13 +56,14 @@ No live account check yet. Human supplied H2 answers: choose `muse-spark-1.3-con
 No live calls made. Cap $40; $10 reserve from the stated $50 credit, pending confirmation.
 
 ## How to run
-From `backend`: `..\.tools\Python311\python.exe -m seed.generate_seed`; `..\.tools\Python311\python.exe -m app.seed_check`; `..\.tools\Python311\python.exe -m pytest -q tests/test_api_seed.py --basetemp=..\.tools\pytest-phase2-1`. Runtime in ignored `.tools/Python311`; later commands will use the same executable. `AI_MODE=mock` by default. Package installation from `backend/requirements.txt` is in progress.
+From `backend`: `..\.tools\Python311\python.exe -m seed.generate_seed`; `..\.tools\Python311\python.exe -m app.seed_check`; `..\.tools\Python311\python.exe -m pytest -q tests --basetemp=..\.tools\pytest-full-p0-1`; `$env:MINILM_MODEL_DIR=(Resolve-Path '..\.tools\all-MiniLM-L6-v2').Path; ..\.tools\Python311\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000`. Runtime and MiniLM are in ignored `.tools/`; requirements are installed there. `AI_MODE=mock` by default. Frontend commands pending build.
 
 ## Deployed URLs
 None.
 
 ## Known issues / bugs
-- None identified yet.
+- H1 deferred: no live Spark/Voice call, G1 or G2 verification yet.
+- A stateless hosted instance can lose the local usage ledger on cold start. Reset demo and same-file restarts preserve it.
 
 ## Ideas (not approved)
 - None.
