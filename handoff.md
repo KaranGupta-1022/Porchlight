@@ -1,6 +1,6 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-24 23:57 America/Chicago by lead/session 2_
+_Last updated: 2026-10-25 00:18 America/Chicago by lead/session 2_
 _Current phase: 5, 8–9 — live Spark nudge repair, P0 frontend and deployment | Gates passed: G1 ☑ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
@@ -12,11 +12,11 @@ G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after o
 3. Hold publication until the human signs in to Render/Vercel and explicitly approves H9. Then push/deploy P0, verify the full loop and cache hits three times, and request H6 phone checks. Stay in P0 until deployed live G2 passes.
 
 ## In progress (exact state)
-- Task: Finish live Spark nudge/draft and targeted Voice check; graph-ml agent is adding the precomputed MiniLM loader; devops is adapting Docker/Render/Vercel files. Publication is on hold at the human's request.
-- Continuity note: context was compacted while the agents were editing. The backend agent completed the seed vector artifact and production requirements; the AI, graph, and devops changes remain uncommitted and require review before committing.
-- Files touched since last commit: `backend/app/ai/provider.py`, `backend/app/ai/spark.py`, `backend/tests/test_ai.py`, `scripts/smoke_spark.py` (AI agent editing), `DEPLOY.md` and `render.yaml` (devops draft), `handoff.md`; `backend/seed/precompute_vectors.py`, `interest_embeddings.json`, and `backend/requirements.deploy.txt` are complete. Vercel correction and context update are committed in `42d51fb`.
+- Task: Finish live Spark nudge/draft and targeted Voice check; review and commit the completed MiniLM graph loader and Render/Vercel prep. The human has signed in to the hosting dashboards, but public deployment is on hold pending H9 approval.
+- Continuity note: context was compacted while the agents were editing. The seed vector artifact and production requirements are committed in `aafa773`; AI, graph, and devops changes remain uncommitted and require review before committing.
+- Files touched since last commit: `backend/app/ai/provider.py`, `backend/app/ai/spark.py`, `backend/tests/test_ai.py`, `scripts/smoke_spark.py` (AI agent editing); `backend/app/graph.py`, `backend/tests/test_graph.py` (graph); `DEPLOY.md`, `render.yaml`, `backend/Dockerfile` (devops); `handoff.md`. Vercel correction and context update are committed in `42d51fb`.
 - State: Mock backend at `http://127.0.0.1:8000` serves `/api/health` and `/docs` (200). G1 live smoke returned visible text and usage after setting `reasoning_effort=minimal`; product default was set to `low`. One live Priya nudge call selected Priya/Duval but returned degraded fallback because 300 completion tokens were exhausted by reasoning. Both live and mock servers were started with MiniLM from ignored `.tools/`; confirm live server state before another call. Frontend 390×844 home render was reviewed by the frontend agent; production build passes outside the sandbox (sandbox esbuild file read was denied). QA privacy fix passes and `.dockerignore` excludes `.env`/`.env.*`. Docker daemon unavailable.
-- Last command run + result: backend seed generator and seed check passed, Duval 0/6 and South Wing 0/8; backend full suite 24 passed, one Starlette warning; mock `/health` and `/docs` 200; `npm.cmd run build` passed outside sandbox. Live `/api/usage`: $0.0001686 ($0.000072 smoke, $0.0000966 nudge).
+- Last command run + result: precomputed 70 normalized 384-dimensional vectors; backend seed check passed, Duval 0/6 and South Wing 0/8; backend full suite 28 passed, one Starlette warning; mock `/health` and `/docs` 200; `npm.cmd run build` passed outside sandbox. Live `/api/usage` at last check: $0.0001686 ($0.000072 smoke, $0.0000966 nudge).
 
 ## Completed
 | Phase | Task | Verified by | Commit |
@@ -33,7 +33,8 @@ G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after o
 | 5 (samples) | Ten fictional mock prompt/output pairs for nudges, drafts, and invite parsing | QA checked seed facts, safety wording, numbering, and JSON | `eeb176a` |
 | 8 (implementation) | Vite React frontend, map, sheets, editable composer, voice preview, Reach animation, A/B toggle | `npm.cmd run build` passed; 390×844 home screenshot reviewed; Vite `/api` proxy passed | `fc308c6` |
 | 9 (deployment instructions) | Exact Cloud Run source-deploy and Vercel commands, env sequence | Official platform docs checked; H5/H9 pending | `a2d6e9e` |
-| 9 (Render prep) | Generated normalized MiniLM vectors for 70 seeded residents and slim runtime requirements | Re-ran local generator; validated 70 vectors at 384 dimensions, matching seed hashes/interests | pending commit |
+| 9 (Render prep) | Generated normalized MiniLM vectors for 70 seeded residents and slim runtime requirements | Re-ran local generator; validated 70 vectors at 384 dimensions, matching seed hashes/interests | `aafa773` |
+| 4/9 (Render graph) | Load seeded MiniLM vectors without Torch at runtime; reject stale artifacts | Full backend suite 28 passed; seed check passed; graph tests block model imports | pending commit |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
@@ -46,9 +47,9 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 | H1 | done | Human confirmed H1; `.env` has a nonempty `META_MODEL_API_KEY` and `MUSE_SPARK_MODEL=muse-spark-1.3-contributor`. Credit confirmation accepted from human's H1 reply. Live G1 check next; never print key. |
 | H2 | done | Six workshop answers recorded in `CONTEXT.md`. Official Contributor limits correct the workshop's standard-model limits. |
 | H3 | done | Five supplied JPG mockups converted to the exact PNG filenames. Frontend must match them. |
-| H5 | open, human action pending | Human asked whether the agent could log into accounts. AGENTS.md §§2, 6 assign credential entry and login to the human. Human has no GCP credits and chose Render + Vercel instead; account sign-in/project setup remains pending. Hold deployment. |
+| H5 | sign-in done; project setup pending | Human confirmed they signed in to Render and Vercel. Neither CLI is installed in this shell and browser automation has no browser surface; repo import/project creation and final URLs remain pending. Render + Vercel selected. Hold deployment pending H9. |
 | H6 | not yet raised | Phone voice-post check after deployed URL exists. |
-| H9 | hold, not approved | Human said to hold deployment unless the agent can log in. Agent cannot enter credentials under AGENTS.md §2. No publication or Cloud Run billing action until human explicitly approves. |
+| H9 | hold, not approved | Human previously said to hold deployment if the agent cannot log in. The human has since signed in to Render and Vercel; public deployment still needs explicit approval. No publication action yet. |
 
 ## Decisions & deviations from the guide
 | When | Decision | Why |

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import builtins
 import math
 import sys
 from datetime import date
@@ -15,7 +16,9 @@ from app.graph import (  # noqa: E402
     bridge_candidates,
     build_graph,
     edge_strength,
+    embedding_mode,
     find_gaps,
+    prime_interest_embeddings,
     reach,
 )
 
@@ -73,3 +76,48 @@ def test_priya_is_top_bridge_candidate_and_met_neighbors_are_excluded() -> None:
     met = set(graph.neighbors("hydepark-you"))
     assert not met.intersection(item["member_id"] for item in candidates)
     assert math.isclose(candidates[0]["components"]["score"], 1.0)
+
+
+def test_precomputed_minilm_vectors_load_for_both_communities(monkeypatch) -> None:
+    people = _seed("hydepark")["members"] + _seed("quarry")["members"]
+    import_module = builtins.__import__
+
+    def without_model_dependencies(name, *args, **kwargs):
+        if name.split(".", 1)[0] in {"torch", "sentence_transformers", "transformers"}:
+            raise AssertionError(f"Web runtime imported a model dependency: {name}")
+        return import_module(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", without_model_dependencies)
+    assert prime_interest_embeddings(people)
+    assert embedding_mode() == "minilm"
+    for name in ("hydepark", "quarry"):
+        seed = _seed(name)
+        graph = build_graph(seed["members"], seed["hangouts"], date(2026, 10, 24))
+        candidates = bridge_candidates(graph, seed["members"], seed["clusters"],
+                                       f"{name}-you")
+        assert candidates and 0 <= candidates[0]["components"]["score"] <= 1
+    assert bridge_candidates(
+        build_graph(_seed("hydepark")["members"], _seed("hydepark")["hangouts"]),
+        _seed("hydepark")["members"], _seed("hydepark")["clusters"],
+        "hydepark-you",
+    )[0]["member_id"] == "hydepark-priya"
+
+
+def test_stale_or_missing_vectors_fall_back_to_overlap(tmp_path: Path) -> None:
+    people = _seed("hydepark")["members"] + _seed("quarry")["members"]
+    source = Path(__file__).resolve().parents[1] / "seed" / "interest_embeddings.json"
+    stale = json.loads(source.read_text(encoding="utf-8"))
+    stale["seed_sha256"]["hydepark.json"] = "0" * 64
+    path = tmp_path / "stale.json"
+    path.write_text(json.dumps(stale), encoding="utf-8")
+    assert not prime_interest_embeddings(people, path)
+    assert embedding_mode() == "overlap"
+    assert not prime_interest_embeddings(people, tmp_path / "missing.json")
+    assert embedding_mode() == "overlap"
+
+
+def test_changed_member_interests_invalidate_vectors() -> None:
+    people = _seed("hydepark")["members"] + _seed("quarry")["members"]
+    people[0]["interests"] = ["different interest"]
+    assert not prime_interest_embeddings(people)
+    assert embedding_mode() == "overlap"

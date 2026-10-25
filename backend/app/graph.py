@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import math
-import os
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
@@ -136,26 +136,59 @@ def find_gaps(graph: nx.Graph, members: Sequence[Mapping[str, Any]],
 
 
 def prime_interest_embeddings(members: Sequence[Mapping[str, Any]],
-                              model_dir: str | Path | None = None) -> bool:
-    """Load cached MiniLM once. No model download happens in this module."""
+                              artifact_path: str | Path | None = None) -> bool:
+    """Load seed MiniLM vectors without loading a model in the web process."""
     global _embedding_mode
-    model_name = str(model_dir or os.getenv("MINILM_MODEL_DIR", "sentence-transformers/all-MiniLM-L6-v2"))
+    _interest_vectors.clear()
+    _embedding_mode = "overlap"
+    seed_dir = Path(__file__).resolve().parents[1] / "seed"
+    path = Path(artifact_path) if artifact_path else seed_dir / "interest_embeddings.json"
     try:
-        from sentence_transformers import SentenceTransformer
+        artifact = json.loads(path.read_text(encoding="utf-8"))
+        if (artifact["model"] != "sentence-transformers/all-MiniLM-L6-v2"
+                or artifact["dimensions"] != 384 or artifact["normalized"] is not True):
+            return False
 
-        model = SentenceTransformer(model_name, local_files_only=True)
-        people = [_as_dict(member) for member in members]
-        texts = [", ".join(_list(member["interests"])) for member in people]
-        vectors = model.encode(texts, normalize_embeddings=True)
-        _interest_vectors.clear()
-        _interest_vectors.update({member["id"]: tuple(float(n) for n in vector)
-                                  for member, vector in zip(people, vectors)})
-        _embedding_mode = "minilm"
-        return True
-    except (OSError, RuntimeError, ImportError, ValueError):
-        _interest_vectors.clear()
-        _embedding_mode = "overlap"
+        seed_people: dict[str, dict[str, Any]] = {}
+        hashes: dict[str, str] = {}
+        for name in ("hydepark.json", "quarry.json"):
+            raw = (seed_dir / name).read_bytes()
+            hashes[name] = hashlib.sha256(raw).hexdigest()
+            for member in json.loads(raw)["members"]:
+                seed_people[member["id"]] = member
+        if artifact["seed_sha256"] != hashes:
+            return False
+        records = artifact["members"]
+        if set(records) != set(seed_people):
+            return False
+
+        vectors: dict[str, tuple[float, ...]] = {}
+        for row in members:
+            member = _as_dict(row)
+            member_id = member["id"]
+            seed = seed_people[member_id]
+            record = records[member_id]
+            interests = _list(member["interests"])
+            text = ", ".join(interests)
+            if (interests != seed["interests"] or record["interests"] != interests
+                    or record["text"] != text):
+                return False
+            values = record["vector"]
+            if (not isinstance(values, list) or len(values) != 384
+                    or any(type(value) not in (int, float) or not math.isfinite(value)
+                           for value in values)
+                    or not math.isclose(sum(value * value for value in values), 1.0,
+                                        rel_tol=0.0, abs_tol=0.0001)):
+                return False
+            vectors[member_id] = tuple(float(value) for value in values)
+        if len(vectors) != len(members):
+            return False
+    except (OSError, ValueError, TypeError, KeyError, IndexError):
         return False
+
+    _interest_vectors.update(vectors)
+    _embedding_mode = "minilm"
+    return True
 
 
 def embedding_mode() -> str:
