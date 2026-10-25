@@ -1,0 +1,1413 @@
+{
+  "community": {
+    "id": "hydepark",
+    "name": "Hyde Park",
+    "kind": "neighborhood",
+    "center_lat": 30.305,
+    "center_lng": -97.728,
+    "zoom": 16
+  },
+  "clusters": [
+    {
+      "id": "hydepark-avenue-g",
+      "community_id": "hydepark",
+      "name": "Avenue G",
+      "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -97.732725,
+              30.2986
+            ],
+            [
+              -97.732275,
+              30.2986
+            ],
+            [
+              -97.732275,
+              30.3004
+            ],
+            [
+              -97.732725,
+              30.3004
+            ],
+            [
+              -97.732725,
+              30.2986
+            ]
+          ]
+        ]
+      },
+      "center_lat": 30.2995,
+      "center_lng": -97.7325
+    },
+    {
+      "id": "hydepark-avenue-f",
+      "community_id": "hydepark",
+      "name": "Avenue F",
+      "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -97.735225,
+              30.3013
+            ],
+            [
+              -97.734775,
+              30.3013
+            ],
+            [
+              -97.734775,
+              30.3031
+            ],
+            [
+              -97.735225,
+              30.3031
+            ],
+            [
+              -97.735225,
+              30.3013
+            ]
+          ]
+        ]
+      },
+      "center_lat": 30.3022,
+      "center_lng": -97.735
+    },
+    {
+      "id": "hydepark-speedway",
+      "community_id": "hydepark",
+      "name": "Speedway",
+      "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -97.738725,
+              30.3041
+            ],
+            [
+              -97.738275,
+              30.3041
+            ],
+            [
+              -97.738275,
+              30.3059
+            ],
+            [
+              -97.738725,
+              30.3059
+            ],
+            [
+              -97.738725,
+              30.3041
+            ]
+          ]
+        ]
+      },
+      "center_lat": 30.305,
+      "center_lng": -97.7385
+    },
+    {
+      "id": "hydepark-43rd",
+      "community_id": "hydepark",
+      "name": "43rd St",
+      "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -97.7429,
+              30.308275
+            ],
+            [
+              -97.7411,
+              30.308275
+            ],
+            [
+              -97.7411,
+              30.308725
+            ],
+            [
+              -97.7429,
+              30.308725
+            ],
+            [
+              -97.7429,
+              30.308275
+            ]
+          ]
+        ]
+      },
+      "center_lat": 30.3085,
+      "center_lng": -97.742
+    },
+    {
+      "id": "hydepark-duval",
+      "community_id": "hydepark",
+      "name": "Duval St",
+      "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -97.727325,
+              30.2992
+            ],
+            [
+              -97.726875,
+              30.2992
+            ],
+            [
+              -97.726875,
+              30.3016
+            ],
+            [
+              -97.727325,
+              30.3016
+            ],
+            [
+              -97.727325,
+              30.2992
+            ]
+          ]
+        ]
+      },
+      "center_lat": 30.3004,
+      "center_lng": -97.7271
+    }
+  ],
+  "members": [
+    {
+      "id": "hydepark-you",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-g",
+      "display_name": "You",
+      "emoji_avatar": "🏡",
+      "lat": 30.299553,
+      "lng": -97.732652,
+      "unit_label": "Fictional residence you",
+      "interests": [
+        "dogs",
+        "coffee",
+        "board games",
+        "gardening"
+      ],
+      "availability": [
+        "wed-evening",
+        "thu-evening",
+        "sat-morning"
+      ],
+      "verified": true,
+      "is_demo_user": true
+    },
+    {
+      "id": "hydepark-marcus",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-g",
+      "display_name": "Marcus",
+      "emoji_avatar": "😎",
+      "lat": 30.299415,
+      "lng": -97.732589,
+      "unit_label": "Fictional residence marcus",
+      "interests": [
+        "coffee",
+        "chess"
+      ],
+      "availability": [
+        "mon-evening",
+        "sun-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-elena",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-g",
+      "display_name": "Elena",
+      "emoji_avatar": "🙂",
+      "lat": 30.299393,
+      "lng": -97.732498,
+      "unit_label": "Fictional residence elena",
+      "interests": [
+        "climbing",
+        "film"
+      ],
+      "availability": [
+        "thu-evening",
+        "sun-afternoon",
+        "fri-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-nora",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-g",
+      "display_name": "Nora",
+      "emoji_avatar": "🌻",
+      "lat": 30.299416,
+      "lng": -97.732382,
+      "unit_label": "Fictional residence nora",
+      "interests": [
+        "live music",
+        "cooking",
+        "gardening"
+      ],
+      "availability": [
+        "sat-morning",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-caleb",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-g",
+      "display_name": "Caleb",
+      "emoji_avatar": "🎲",
+      "lat": 30.299345,
+      "lng": -97.732629,
+      "unit_label": "Fictional residence caleb",
+      "interests": [
+        "books",
+        "dogs",
+        "kids"
+      ],
+      "availability": [
+        "sat-afternoon",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-tessa",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-g",
+      "display_name": "Tessa",
+      "emoji_avatar": "🎲",
+      "lat": 30.29952,
+      "lng": -97.732395,
+      "unit_label": "Fictional residence tessa",
+      "interests": [
+        "climbing",
+        "board games"
+      ],
+      "availability": [
+        "thu-evening",
+        "sat-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-owen",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-g",
+      "display_name": "Owen",
+      "emoji_avatar": "🐕",
+      "lat": 30.29942,
+      "lng": -97.732634,
+      "unit_label": "Fictional residence owen",
+      "interests": [
+        "chess",
+        "cooking"
+      ],
+      "availability": [
+        "sat-morning",
+        "tue-evening",
+        "wed-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-amara",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-g",
+      "display_name": "Amara",
+      "emoji_avatar": "😎",
+      "lat": 30.299445,
+      "lng": -97.732446,
+      "unit_label": "Fictional residence amara",
+      "interests": [
+        "bikes",
+        "climbing"
+      ],
+      "availability": [
+        "wed-evening",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-felix",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-g",
+      "display_name": "Felix",
+      "emoji_avatar": "🐕",
+      "lat": 30.299454,
+      "lng": -97.732343,
+      "unit_label": "Fictional residence felix",
+      "interests": [
+        "books",
+        "dogs",
+        "running"
+      ],
+      "availability": [
+        "sat-morning",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-mina",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-f",
+      "display_name": "Mina",
+      "emoji_avatar": "🎲",
+      "lat": 30.302112,
+      "lng": -97.735092,
+      "unit_label": "Fictional residence mina",
+      "interests": [
+        "film",
+        "kids"
+      ],
+      "availability": [
+        "sun-afternoon",
+        "tue-evening",
+        "wed-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-jules",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-f",
+      "display_name": "Jules",
+      "emoji_avatar": "☕",
+      "lat": 30.302063,
+      "lng": -97.734922,
+      "unit_label": "Fictional residence jules",
+      "interests": [
+        "coffee",
+        "chess",
+        "live music"
+      ],
+      "availability": [
+        "wed-evening",
+        "fri-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-ravi",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-f",
+      "display_name": "Ravi",
+      "emoji_avatar": "😎",
+      "lat": 30.302198,
+      "lng": -97.734918,
+      "unit_label": "Fictional residence ravi",
+      "interests": [
+        "film",
+        "gardening"
+      ],
+      "availability": [
+        "tue-evening",
+        "thu-evening",
+        "sat-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-leah",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-f",
+      "display_name": "Leah",
+      "emoji_avatar": "☕",
+      "lat": 30.302236,
+      "lng": -97.73501,
+      "unit_label": "Fictional residence leah",
+      "interests": [
+        "film",
+        "climbing"
+      ],
+      "availability": [
+        "fri-evening",
+        "sat-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-theo",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-f",
+      "display_name": "Theo",
+      "emoji_avatar": "🚲",
+      "lat": 30.302254,
+      "lng": -97.735124,
+      "unit_label": "Fictional residence theo",
+      "interests": [
+        "kids",
+        "dogs"
+      ],
+      "availability": [
+        "wed-evening",
+        "fri-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-wren",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-f",
+      "display_name": "Wren",
+      "emoji_avatar": "🐕",
+      "lat": 30.302341,
+      "lng": -97.735064,
+      "unit_label": "Fictional residence wren",
+      "interests": [
+        "live music",
+        "gardening"
+      ],
+      "availability": [
+        "sat-morning",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-iris",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-f",
+      "display_name": "Iris",
+      "emoji_avatar": "☕",
+      "lat": 30.302017,
+      "lng": -97.734863,
+      "unit_label": "Fictional residence iris",
+      "interests": [
+        "dogs",
+        "running"
+      ],
+      "availability": [
+        "tue-evening",
+        "sat-morning"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-noah",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-avenue-f",
+      "display_name": "Noah",
+      "emoji_avatar": "🌻",
+      "lat": 30.302195,
+      "lng": -97.735138,
+      "unit_label": "Fictional residence noah",
+      "interests": [
+        "film",
+        "kids"
+      ],
+      "availability": [
+        "fri-evening",
+        "sun-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-samira",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-speedway",
+      "display_name": "Samira",
+      "emoji_avatar": "🐕",
+      "lat": 30.305142,
+      "lng": -97.738525,
+      "unit_label": "Fictional residence samira",
+      "interests": [
+        "climbing",
+        "cooking"
+      ],
+      "availability": [
+        "sat-morning",
+        "thu-evening",
+        "fri-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-leo",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-speedway",
+      "display_name": "Leo",
+      "emoji_avatar": "😎",
+      "lat": 30.304982,
+      "lng": -97.738581,
+      "unit_label": "Fictional residence leo",
+      "interests": [
+        "dogs",
+        "coffee",
+        "bikes"
+      ],
+      "availability": [
+        "thu-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-cora",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-speedway",
+      "display_name": "Cora",
+      "emoji_avatar": "🐕",
+      "lat": 30.304837,
+      "lng": -97.738458,
+      "unit_label": "Fictional residence cora",
+      "interests": [
+        "dogs",
+        "live music"
+      ],
+      "availability": [
+        "thu-evening",
+        "wed-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-milo",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-speedway",
+      "display_name": "Milo",
+      "emoji_avatar": "🌻",
+      "lat": 30.305064,
+      "lng": -97.738591,
+      "unit_label": "Fictional residence milo",
+      "interests": [
+        "running",
+        "kids",
+        "chess"
+      ],
+      "availability": [
+        "tue-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-ada",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-speedway",
+      "display_name": "Ada",
+      "emoji_avatar": "🚲",
+      "lat": 30.30506,
+      "lng": -97.738547,
+      "unit_label": "Fictional residence ada",
+      "interests": [
+        "climbing",
+        "dogs",
+        "film"
+      ],
+      "availability": [
+        "mon-evening",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-finn",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-speedway",
+      "display_name": "Finn",
+      "emoji_avatar": "😎",
+      "lat": 30.305087,
+      "lng": -97.738404,
+      "unit_label": "Fictional residence finn",
+      "interests": [
+        "running",
+        "books"
+      ],
+      "availability": [
+        "wed-evening",
+        "thu-evening",
+        "tue-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-lena",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-speedway",
+      "display_name": "Lena",
+      "emoji_avatar": "😎",
+      "lat": 30.304916,
+      "lng": -97.73858,
+      "unit_label": "Fictional residence lena",
+      "interests": [
+        "books",
+        "bikes",
+        "board games"
+      ],
+      "availability": [
+        "mon-evening",
+        "sun-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-zoe",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-speedway",
+      "display_name": "Zoe",
+      "emoji_avatar": "🌻",
+      "lat": 30.305162,
+      "lng": -97.738388,
+      "unit_label": "Fictional residence zoe",
+      "interests": [
+        "kids",
+        "books",
+        "running"
+      ],
+      "availability": [
+        "mon-evening",
+        "tue-evening",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-avery",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-43rd",
+      "display_name": "Avery",
+      "emoji_avatar": "📚",
+      "lat": 30.308311,
+      "lng": -97.742035,
+      "unit_label": "Fictional residence avery",
+      "interests": [
+        "chess",
+        "climbing",
+        "bikes"
+      ],
+      "availability": [
+        "wed-evening",
+        "tue-evening",
+        "sun-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-juno",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-43rd",
+      "display_name": "Juno",
+      "emoji_avatar": "🙂",
+      "lat": 30.308393,
+      "lng": -97.742141,
+      "unit_label": "Fictional residence juno",
+      "interests": [
+        "dogs",
+        "books",
+        "coffee"
+      ],
+      "availability": [
+        "wed-evening",
+        "mon-evening",
+        "fri-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-dev",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-43rd",
+      "display_name": "Dev",
+      "emoji_avatar": "😎",
+      "lat": 30.30834,
+      "lng": -97.742101,
+      "unit_label": "Fictional residence dev",
+      "interests": [
+        "chess",
+        "board games"
+      ],
+      "availability": [
+        "mon-evening",
+        "fri-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-mae",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-43rd",
+      "display_name": "Mae",
+      "emoji_avatar": "🎲",
+      "lat": 30.308341,
+      "lng": -97.74195,
+      "unit_label": "Fictional residence mae",
+      "interests": [
+        "running",
+        "film",
+        "live music"
+      ],
+      "availability": [
+        "fri-evening",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-otis",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-43rd",
+      "display_name": "Otis",
+      "emoji_avatar": "📚",
+      "lat": 30.30836,
+      "lng": -97.741953,
+      "unit_label": "Fictional residence otis",
+      "interests": [
+        "books",
+        "board games",
+        "dogs"
+      ],
+      "availability": [
+        "tue-evening",
+        "mon-evening",
+        "fri-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-nia",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-43rd",
+      "display_name": "Nia",
+      "emoji_avatar": "🎲",
+      "lat": 30.308391,
+      "lng": -97.742075,
+      "unit_label": "Fictional residence nia",
+      "interests": [
+        "running",
+        "live music"
+      ],
+      "availability": [
+        "wed-evening",
+        "thu-evening",
+        "fri-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-ezra",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-43rd",
+      "display_name": "Ezra",
+      "emoji_avatar": "🙂",
+      "lat": 30.308577,
+      "lng": -97.741964,
+      "unit_label": "Fictional residence ezra",
+      "interests": [
+        "film",
+        "board games",
+        "gardening"
+      ],
+      "availability": [
+        "tue-evening",
+        "mon-evening",
+        "sat-morning"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-rose",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-43rd",
+      "display_name": "Rose",
+      "emoji_avatar": "🐕",
+      "lat": 30.30852,
+      "lng": -97.742073,
+      "unit_label": "Fictional residence rose",
+      "interests": [
+        "running",
+        "film",
+        "climbing"
+      ],
+      "availability": [
+        "sun-afternoon",
+        "wed-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-benji",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-43rd",
+      "display_name": "Benji",
+      "emoji_avatar": "☕",
+      "lat": 30.308345,
+      "lng": -97.742024,
+      "unit_label": "Fictional residence benji",
+      "interests": [
+        "dogs",
+        "live music"
+      ],
+      "availability": [
+        "fri-evening",
+        "tue-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-priya",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-duval",
+      "display_name": "Priya",
+      "emoji_avatar": "🐕",
+      "lat": 30.300492,
+      "lng": -97.727083,
+      "unit_label": "Fictional residence priya",
+      "interests": [
+        "dogs",
+        "coffee",
+        "board games",
+        "gardening"
+      ],
+      "availability": [
+        "wed-evening",
+        "thu-evening",
+        "sat-morning"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-sofia",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-duval",
+      "display_name": "Sofia",
+      "emoji_avatar": "😎",
+      "lat": 30.300373,
+      "lng": -97.727257,
+      "unit_label": "Fictional residence sofia",
+      "interests": [
+        "bikes",
+        "dogs"
+      ],
+      "availability": [
+        "wed-evening",
+        "thu-evening",
+        "tue-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-dara",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-duval",
+      "display_name": "Dara",
+      "emoji_avatar": "🙂",
+      "lat": 30.300226,
+      "lng": -97.727143,
+      "unit_label": "Fictional residence dara",
+      "interests": [
+        "running",
+        "film",
+        "books"
+      ],
+      "availability": [
+        "sat-morning",
+        "sat-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-kian",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-duval",
+      "display_name": "Kian",
+      "emoji_avatar": "🌻",
+      "lat": 30.300423,
+      "lng": -97.72698,
+      "unit_label": "Fictional residence kian",
+      "interests": [
+        "gardening",
+        "books"
+      ],
+      "availability": [
+        "mon-evening",
+        "tue-evening",
+        "sat-morning"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-luca",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-duval",
+      "display_name": "Luca",
+      "emoji_avatar": "🚲",
+      "lat": 30.300561,
+      "lng": -97.72701,
+      "unit_label": "Fictional residence luca",
+      "interests": [
+        "cooking",
+        "gardening"
+      ],
+      "availability": [
+        "sat-afternoon",
+        "sun-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "hydepark-bela",
+      "community_id": "hydepark",
+      "cluster_id": "hydepark-duval",
+      "display_name": "Bela",
+      "emoji_avatar": "🐕",
+      "lat": 30.300225,
+      "lng": -97.727109,
+      "unit_label": "Fictional residence bela",
+      "interests": [
+        "live music",
+        "cooking",
+        "running"
+      ],
+      "availability": [
+        "mon-evening",
+        "sat-morning"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    }
+  ],
+  "hangouts": [
+    {
+      "id": "hydepark-hangout-001",
+      "a_id": "hydepark-you",
+      "b_id": "hydepark-marcus",
+      "date": "2026-09-28",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-002",
+      "a_id": "hydepark-you",
+      "b_id": "hydepark-elena",
+      "date": "2026-08-29",
+      "kind": "walk"
+    },
+    {
+      "id": "hydepark-hangout-003",
+      "a_id": "hydepark-you",
+      "b_id": "hydepark-elena",
+      "date": "2026-09-04",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-004",
+      "a_id": "hydepark-you",
+      "b_id": "hydepark-mina",
+      "date": "2026-09-12",
+      "kind": "garden swap"
+    },
+    {
+      "id": "hydepark-hangout-005",
+      "a_id": "hydepark-you",
+      "b_id": "hydepark-mina",
+      "date": "2026-09-28",
+      "kind": "garden swap"
+    },
+    {
+      "id": "hydepark-hangout-006",
+      "a_id": "hydepark-you",
+      "b_id": "hydepark-jules",
+      "date": "2026-10-22",
+      "kind": "walk"
+    },
+    {
+      "id": "hydepark-hangout-007",
+      "a_id": "hydepark-you",
+      "b_id": "hydepark-jules",
+      "date": "2026-08-28",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-008",
+      "a_id": "hydepark-you",
+      "b_id": "hydepark-samira",
+      "date": "2026-09-16",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-009",
+      "a_id": "hydepark-you",
+      "b_id": "hydepark-leo",
+      "date": "2026-10-17",
+      "kind": "garden swap"
+    },
+    {
+      "id": "hydepark-hangout-010",
+      "a_id": "hydepark-marcus",
+      "b_id": "hydepark-ravi",
+      "date": "2026-09-19",
+      "kind": "coffee"
+    },
+    {
+      "id": "hydepark-hangout-011",
+      "a_id": "hydepark-marcus",
+      "b_id": "hydepark-rose",
+      "date": "2026-09-26",
+      "kind": "garden swap"
+    },
+    {
+      "id": "hydepark-hangout-012",
+      "a_id": "hydepark-caleb",
+      "b_id": "hydepark-tessa",
+      "date": "2026-09-17",
+      "kind": "chat"
+    },
+    {
+      "id": "hydepark-hangout-013",
+      "a_id": "hydepark-tessa",
+      "b_id": "hydepark-samira",
+      "date": "2026-08-31",
+      "kind": "walk"
+    },
+    {
+      "id": "hydepark-hangout-014",
+      "a_id": "hydepark-owen",
+      "b_id": "hydepark-iris",
+      "date": "2026-09-11",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-015",
+      "a_id": "hydepark-owen",
+      "b_id": "hydepark-leo",
+      "date": "2026-09-22",
+      "kind": "walk"
+    },
+    {
+      "id": "hydepark-hangout-016",
+      "a_id": "hydepark-amara",
+      "b_id": "hydepark-mae",
+      "date": "2026-09-28",
+      "kind": "coffee"
+    },
+    {
+      "id": "hydepark-hangout-017",
+      "a_id": "hydepark-felix",
+      "b_id": "hydepark-zoe",
+      "date": "2026-10-06",
+      "kind": "walk"
+    },
+    {
+      "id": "hydepark-hangout-018",
+      "a_id": "hydepark-felix",
+      "b_id": "hydepark-dara",
+      "date": "2026-09-23",
+      "kind": "walk"
+    },
+    {
+      "id": "hydepark-hangout-019",
+      "a_id": "hydepark-mina",
+      "b_id": "hydepark-ravi",
+      "date": "2026-09-17",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-020",
+      "a_id": "hydepark-mina",
+      "b_id": "hydepark-ravi",
+      "date": "2026-10-18",
+      "kind": "coffee"
+    },
+    {
+      "id": "hydepark-hangout-021",
+      "a_id": "hydepark-mina",
+      "b_id": "hydepark-benji",
+      "date": "2026-09-15",
+      "kind": "chat"
+    },
+    {
+      "id": "hydepark-hangout-022",
+      "a_id": "hydepark-jules",
+      "b_id": "hydepark-priya",
+      "date": "2026-10-03",
+      "kind": "garden swap"
+    },
+    {
+      "id": "hydepark-hangout-023",
+      "a_id": "hydepark-ravi",
+      "b_id": "hydepark-noah",
+      "date": "2026-09-23",
+      "kind": "garden swap"
+    },
+    {
+      "id": "hydepark-hangout-024",
+      "a_id": "hydepark-wren",
+      "b_id": "hydepark-priya",
+      "date": "2026-09-16",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-025",
+      "a_id": "hydepark-iris",
+      "b_id": "hydepark-benji",
+      "date": "2026-09-13",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-026",
+      "a_id": "hydepark-iris",
+      "b_id": "hydepark-benji",
+      "date": "2026-10-09",
+      "kind": "walk"
+    },
+    {
+      "id": "hydepark-hangout-027",
+      "a_id": "hydepark-noah",
+      "b_id": "hydepark-dara",
+      "date": "2026-08-27",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-028",
+      "a_id": "hydepark-milo",
+      "b_id": "hydepark-juno",
+      "date": "2026-09-24",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-029",
+      "a_id": "hydepark-milo",
+      "b_id": "hydepark-priya",
+      "date": "2026-09-18",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-030",
+      "a_id": "hydepark-finn",
+      "b_id": "hydepark-juno",
+      "date": "2026-09-25",
+      "kind": "chat"
+    },
+    {
+      "id": "hydepark-hangout-031",
+      "a_id": "hydepark-lena",
+      "b_id": "hydepark-juno",
+      "date": "2026-10-08",
+      "kind": "coffee"
+    },
+    {
+      "id": "hydepark-hangout-032",
+      "a_id": "hydepark-zoe",
+      "b_id": "hydepark-benji",
+      "date": "2026-10-15",
+      "kind": "chat"
+    },
+    {
+      "id": "hydepark-hangout-033",
+      "a_id": "hydepark-rose",
+      "b_id": "hydepark-priya",
+      "date": "2026-08-31",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-034",
+      "a_id": "hydepark-rose",
+      "b_id": "hydepark-sofia",
+      "date": "2026-09-05",
+      "kind": "board games"
+    },
+    {
+      "id": "hydepark-hangout-035",
+      "a_id": "hydepark-priya",
+      "b_id": "hydepark-marcus",
+      "date": "2026-09-27",
+      "kind": "board games"
+    }
+  ],
+  "invites": [
+    {
+      "id": "hydepark-boardgames",
+      "community_id": "hydepark",
+      "host_id": "hydepark-marcus",
+      "title": "Porch board games",
+      "activity": "board games",
+      "starts_at": "2026-10-30T18:00:00-05:00",
+      "capacity": 4,
+      "lat": 30.2995,
+      "lng": -97.7325,
+      "exact_location": "Fictional porch G-1",
+      "place_hint": "near Avenue G",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    },
+    {
+      "id": "hydepark-blockparty",
+      "community_id": "hydepark",
+      "host_id": "hydepark-elena",
+      "title": "Saturday block party",
+      "activity": "block party",
+      "starts_at": "2026-10-31T17:00:00-05:00",
+      "capacity": 18,
+      "lat": 30.2997,
+      "lng": -97.7327,
+      "exact_location": "Fictional Avenue G common area",
+      "place_hint": "Avenue G block",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    },
+    {
+      "id": "hydepark-dogwalk",
+      "community_id": "hydepark",
+      "host_id": "hydepark-priya",
+      "title": "Evening dog walk",
+      "activity": "dog walk",
+      "starts_at": "2026-10-29T18:00:00-05:00",
+      "capacity": 6,
+      "lat": 30.3004,
+      "lng": -97.7271,
+      "exact_location": "Fictional Duval meeting corner",
+      "place_hint": "near Duval St",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    },
+    {
+      "id": "hydepark-garden",
+      "community_id": "hydepark",
+      "host_id": "hydepark-mina",
+      "title": "Garden swap",
+      "activity": "gardening",
+      "starts_at": "2026-10-28T11:00:00-05:00",
+      "capacity": 8,
+      "lat": 30.3022,
+      "lng": -97.735,
+      "exact_location": "Fictional garden F-2",
+      "place_hint": "near Avenue F",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    },
+    {
+      "id": "hydepark-coffee",
+      "community_id": "hydepark",
+      "host_id": "hydepark-jules",
+      "title": "Coffee and chess",
+      "activity": "chess",
+      "starts_at": "2026-10-27T10:00:00-05:00",
+      "capacity": 5,
+      "lat": 30.3021,
+      "lng": -97.7352,
+      "exact_location": "Fictional cafe F-3",
+      "place_hint": "Avenue F corner",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    },
+    {
+      "id": "hydepark-bikeride",
+      "community_id": "hydepark",
+      "host_id": "hydepark-samira",
+      "title": "Easy bike loop",
+      "activity": "bikes",
+      "starts_at": "2026-10-28T17:30:00-05:00",
+      "capacity": 8,
+      "lat": 30.305,
+      "lng": -97.7385,
+      "exact_location": "Fictional bike rack S-1",
+      "place_hint": "near Speedway",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    },
+    {
+      "id": "hydepark-music",
+      "community_id": "hydepark",
+      "host_id": "hydepark-avery",
+      "title": "Backyard acoustic hour",
+      "activity": "live music",
+      "starts_at": "2026-10-30T19:00:00-05:00",
+      "capacity": 10,
+      "lat": 30.3085,
+      "lng": -97.742,
+      "exact_location": "Fictional patio 43-1",
+      "place_hint": "near 43rd St",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    }
+  ],
+  "rsvps": [],
+  "statuses": [
+    {
+      "id": "hydepark-status-nora",
+      "member_id": "hydepark-nora",
+      "text": "Free for a short walk",
+      "until": "2026-10-30T20:00:00-05:00"
+    },
+    {
+      "id": "hydepark-status-priya",
+      "member_id": "hydepark-priya",
+      "text": "Free for a dog walk",
+      "until": "2026-10-29T19:00:00-05:00"
+    },
+    {
+      "id": "hydepark-status-milo",
+      "member_id": "hydepark-milo",
+      "text": "Up for coffee",
+      "until": "2026-10-28T18:00:00-05:00"
+    },
+    {
+      "id": "hydepark-status-juno",
+      "member_id": "hydepark-juno",
+      "text": "Free for a garden swap",
+      "until": "2026-10-30T14:00:00-05:00"
+    }
+  ],
+  "drafts": [],
+  "api_usage": []
+}

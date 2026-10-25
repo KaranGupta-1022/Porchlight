@@ -1,0 +1,1198 @@
+{
+  "community": {
+    "id": "quarry",
+    "name": "The Quarry Lofts",
+    "kind": "apartments",
+    "center_lat": 30.287,
+    "center_lng": -97.745,
+    "zoom": 18
+  },
+  "clusters": [
+    {
+      "id": "quarry-north",
+      "community_id": "quarry",
+      "name": "North Wing",
+      "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -97.74539,
+              30.287095
+            ],
+            [
+              -97.74507,
+              30.287095
+            ],
+            [
+              -97.74507,
+              30.287345
+            ],
+            [
+              -97.74539,
+              30.287345
+            ],
+            [
+              -97.74539,
+              30.287095
+            ]
+          ]
+        ]
+      },
+      "center_lat": 30.28722,
+      "center_lng": -97.74523
+    },
+    {
+      "id": "quarry-south",
+      "community_id": "quarry",
+      "name": "South Wing",
+      "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -97.74537,
+              30.286645
+            ],
+            [
+              -97.74505,
+              30.286645
+            ],
+            [
+              -97.74505,
+              30.286895
+            ],
+            [
+              -97.74537,
+              30.286895
+            ],
+            [
+              -97.74537,
+              30.286645
+            ]
+          ]
+        ]
+      },
+      "center_lat": 30.28677,
+      "center_lng": -97.74521
+    },
+    {
+      "id": "quarry-floor5",
+      "community_id": "quarry",
+      "name": "Floor 5",
+      "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -97.74494,
+              30.286895
+            ],
+            [
+              -97.74464,
+              30.286895
+            ],
+            [
+              -97.74464,
+              30.287145
+            ],
+            [
+              -97.74494,
+              30.287145
+            ],
+            [
+              -97.74494,
+              30.286895
+            ]
+          ]
+        ]
+      },
+      "center_lat": 30.28702,
+      "center_lng": -97.74479
+    },
+    {
+      "id": "quarry-rooftop",
+      "community_id": "quarry",
+      "name": "Rooftop crew",
+      "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -97.7449,
+              30.287165
+            ],
+            [
+              -97.74462,
+              30.287165
+            ],
+            [
+              -97.74462,
+              30.287395
+            ],
+            [
+              -97.7449,
+              30.287395
+            ],
+            [
+              -97.7449,
+              30.287165
+            ]
+          ]
+        ]
+      },
+      "center_lat": 30.28728,
+      "center_lng": -97.74476
+    }
+  ],
+  "members": [
+    {
+      "id": "quarry-you",
+      "community_id": "quarry",
+      "cluster_id": "quarry-north",
+      "display_name": "You",
+      "emoji_avatar": "🏢",
+      "lat": 30.287112,
+      "lng": -97.745226,
+      "unit_label": "Fictional residence you",
+      "interests": [
+        "gaming",
+        "cooking",
+        "film",
+        "study groups"
+      ],
+      "availability": [
+        "wed-evening",
+        "fri-evening",
+        "sat-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": true
+    },
+    {
+      "id": "quarry-anika",
+      "community_id": "quarry",
+      "cluster_id": "quarry-north",
+      "display_name": "Anika",
+      "emoji_avatar": "☕",
+      "lat": 30.287288,
+      "lng": -97.7452,
+      "unit_label": "Fictional residence anika",
+      "interests": [
+        "coffee",
+        "study groups",
+        "gaming"
+      ],
+      "availability": [
+        "thu-evening",
+        "sun-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-cole",
+      "community_id": "quarry",
+      "cluster_id": "quarry-north",
+      "display_name": "Cole",
+      "emoji_avatar": "🌻",
+      "lat": 30.287145,
+      "lng": -97.745322,
+      "unit_label": "Fictional residence cole",
+      "interests": [
+        "study groups",
+        "climbing"
+      ],
+      "availability": [
+        "fri-evening",
+        "wed-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-rhea",
+      "community_id": "quarry",
+      "cluster_id": "quarry-north",
+      "display_name": "Rhea",
+      "emoji_avatar": "🐕",
+      "lat": 30.287194,
+      "lng": -97.745349,
+      "unit_label": "Fictional residence rhea",
+      "interests": [
+        "running",
+        "books"
+      ],
+      "availability": [
+        "tue-evening",
+        "thu-evening",
+        "sat-morning"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-tobin",
+      "community_id": "quarry",
+      "cluster_id": "quarry-north",
+      "display_name": "Tobin",
+      "emoji_avatar": "🎲",
+      "lat": 30.287205,
+      "lng": -97.745365,
+      "unit_label": "Fictional residence tobin",
+      "interests": [
+        "coffee",
+        "study groups"
+      ],
+      "availability": [
+        "sat-afternoon",
+        "sat-morning",
+        "sun-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-belle",
+      "community_id": "quarry",
+      "cluster_id": "quarry-north",
+      "display_name": "Belle",
+      "emoji_avatar": "📚",
+      "lat": 30.287038,
+      "lng": -97.745286,
+      "unit_label": "Fictional residence belle",
+      "interests": [
+        "film",
+        "study groups",
+        "cooking"
+      ],
+      "availability": [
+        "tue-evening",
+        "thu-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-nikhil",
+      "community_id": "quarry",
+      "cluster_id": "quarry-north",
+      "display_name": "Nikhil",
+      "emoji_avatar": "☕",
+      "lat": 30.287182,
+      "lng": -97.745365,
+      "unit_label": "Fictional residence nikhil",
+      "interests": [
+        "coffee",
+        "film"
+      ],
+      "availability": [
+        "thu-evening",
+        "wed-evening",
+        "tue-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-paz",
+      "community_id": "quarry",
+      "cluster_id": "quarry-north",
+      "display_name": "Paz",
+      "emoji_avatar": "🎲",
+      "lat": 30.287224,
+      "lng": -97.7451,
+      "unit_label": "Fictional residence paz",
+      "interests": [
+        "climbing",
+        "film"
+      ],
+      "availability": [
+        "wed-evening",
+        "tue-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-yara",
+      "community_id": "quarry",
+      "cluster_id": "quarry-north",
+      "display_name": "Yara",
+      "emoji_avatar": "😎",
+      "lat": 30.287096,
+      "lng": -97.745341,
+      "unit_label": "Fictional residence yara",
+      "interests": [
+        "film",
+        "climbing"
+      ],
+      "availability": [
+        "sun-afternoon",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-imani",
+      "community_id": "quarry",
+      "cluster_id": "quarry-south",
+      "display_name": "Imani",
+      "emoji_avatar": "📚",
+      "lat": 30.2867,
+      "lng": -97.745229,
+      "unit_label": "Fictional residence imani",
+      "interests": [
+        "gaming",
+        "cooking",
+        "film",
+        "study groups"
+      ],
+      "availability": [
+        "wed-evening",
+        "fri-evening",
+        "sat-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-hugo",
+      "community_id": "quarry",
+      "cluster_id": "quarry-south",
+      "display_name": "Hugo",
+      "emoji_avatar": "😎",
+      "lat": 30.286805,
+      "lng": -97.745257,
+      "unit_label": "Fictional residence hugo",
+      "interests": [
+        "film",
+        "coffee",
+        "gaming"
+      ],
+      "availability": [
+        "sun-afternoon",
+        "thu-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-dina",
+      "community_id": "quarry",
+      "cluster_id": "quarry-south",
+      "display_name": "Dina",
+      "emoji_avatar": "😎",
+      "lat": 30.286689,
+      "lng": -97.745164,
+      "unit_label": "Fictional residence dina",
+      "interests": [
+        "books",
+        "coffee"
+      ],
+      "availability": [
+        "sun-afternoon",
+        "fri-evening",
+        "sat-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-ren",
+      "community_id": "quarry",
+      "cluster_id": "quarry-south",
+      "display_name": "Ren",
+      "emoji_avatar": "📚",
+      "lat": 30.286797,
+      "lng": -97.74531,
+      "unit_label": "Fictional residence ren",
+      "interests": [
+        "running",
+        "coffee"
+      ],
+      "availability": [
+        "mon-evening",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-kim",
+      "community_id": "quarry",
+      "cluster_id": "quarry-south",
+      "display_name": "Kim",
+      "emoji_avatar": "🙂",
+      "lat": 30.286612,
+      "lng": -97.745163,
+      "unit_label": "Fictional residence kim",
+      "interests": [
+        "books",
+        "running"
+      ],
+      "availability": [
+        "sun-afternoon",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-sasha",
+      "community_id": "quarry",
+      "cluster_id": "quarry-south",
+      "display_name": "Sasha",
+      "emoji_avatar": "🎲",
+      "lat": 30.286929,
+      "lng": -97.745246,
+      "unit_label": "Fictional residence sasha",
+      "interests": [
+        "books",
+        "gaming"
+      ],
+      "availability": [
+        "sat-morning",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-eli",
+      "community_id": "quarry",
+      "cluster_id": "quarry-south",
+      "display_name": "Eli",
+      "emoji_avatar": "🌻",
+      "lat": 30.286727,
+      "lng": -97.745289,
+      "unit_label": "Fictional residence eli",
+      "interests": [
+        "climbing",
+        "film",
+        "books"
+      ],
+      "availability": [
+        "tue-evening",
+        "fri-evening",
+        "sat-morning"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-bea",
+      "community_id": "quarry",
+      "cluster_id": "quarry-south",
+      "display_name": "Bea",
+      "emoji_avatar": "🚲",
+      "lat": 30.286948,
+      "lng": -97.745146,
+      "unit_label": "Fictional residence bea",
+      "interests": [
+        "books",
+        "gaming"
+      ],
+      "availability": [
+        "tue-evening",
+        "wed-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-ari",
+      "community_id": "quarry",
+      "cluster_id": "quarry-floor5",
+      "display_name": "Ari",
+      "emoji_avatar": "😎",
+      "lat": 30.287085,
+      "lng": -97.744685,
+      "unit_label": "Fictional residence ari",
+      "interests": [
+        "books",
+        "coffee",
+        "climbing"
+      ],
+      "availability": [
+        "sat-morning",
+        "mon-evening",
+        "wed-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-cass",
+      "community_id": "quarry",
+      "cluster_id": "quarry-floor5",
+      "display_name": "Cass",
+      "emoji_avatar": "🐕",
+      "lat": 30.28719,
+      "lng": -97.744794,
+      "unit_label": "Fictional residence cass",
+      "interests": [
+        "gaming",
+        "climbing",
+        "running"
+      ],
+      "availability": [
+        "wed-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-mira",
+      "community_id": "quarry",
+      "cluster_id": "quarry-floor5",
+      "display_name": "Mira",
+      "emoji_avatar": "🙂",
+      "lat": 30.287147,
+      "lng": -97.744667,
+      "unit_label": "Fictional residence mira",
+      "interests": [
+        "climbing",
+        "film",
+        "coffee"
+      ],
+      "availability": [
+        "wed-evening",
+        "fri-evening",
+        "thu-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-tariq",
+      "community_id": "quarry",
+      "cluster_id": "quarry-floor5",
+      "display_name": "Tariq",
+      "emoji_avatar": "🌻",
+      "lat": 30.287146,
+      "lng": -97.744703,
+      "unit_label": "Fictional residence tariq",
+      "interests": [
+        "gaming",
+        "climbing"
+      ],
+      "availability": [
+        "mon-evening",
+        "thu-evening",
+        "wed-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-penny",
+      "community_id": "quarry",
+      "cluster_id": "quarry-floor5",
+      "display_name": "Penny",
+      "emoji_avatar": "📚",
+      "lat": 30.286938,
+      "lng": -97.74471,
+      "unit_label": "Fictional residence penny",
+      "interests": [
+        "running",
+        "film"
+      ],
+      "availability": [
+        "thu-evening",
+        "wed-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-gus",
+      "community_id": "quarry",
+      "cluster_id": "quarry-floor5",
+      "display_name": "Gus",
+      "emoji_avatar": "📚",
+      "lat": 30.28719,
+      "lng": -97.744635,
+      "unit_label": "Fictional residence gus",
+      "interests": [
+        "cooking",
+        "gaming",
+        "books"
+      ],
+      "availability": [
+        "sat-afternoon",
+        "fri-evening",
+        "sun-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-nell",
+      "community_id": "quarry",
+      "cluster_id": "quarry-floor5",
+      "display_name": "Nell",
+      "emoji_avatar": "☕",
+      "lat": 30.287134,
+      "lng": -97.744906,
+      "unit_label": "Fictional residence nell",
+      "interests": [
+        "gaming",
+        "coffee",
+        "climbing"
+      ],
+      "availability": [
+        "sun-afternoon",
+        "sat-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-maren",
+      "community_id": "quarry",
+      "cluster_id": "quarry-rooftop",
+      "display_name": "Maren",
+      "emoji_avatar": "🌻",
+      "lat": 30.287413,
+      "lng": -97.744829,
+      "unit_label": "Fictional residence maren",
+      "interests": [
+        "climbing",
+        "books",
+        "film"
+      ],
+      "availability": [
+        "sun-afternoon",
+        "fri-evening",
+        "tue-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-sol",
+      "community_id": "quarry",
+      "cluster_id": "quarry-rooftop",
+      "display_name": "Sol",
+      "emoji_avatar": "🚲",
+      "lat": 30.287426,
+      "lng": -97.744622,
+      "unit_label": "Fictional residence sol",
+      "interests": [
+        "climbing",
+        "running",
+        "cooking"
+      ],
+      "availability": [
+        "sat-afternoon",
+        "fri-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-kit",
+      "community_id": "quarry",
+      "cluster_id": "quarry-rooftop",
+      "display_name": "Kit",
+      "emoji_avatar": "😎",
+      "lat": 30.287232,
+      "lng": -97.744911,
+      "unit_label": "Fictional residence kit",
+      "interests": [
+        "cooking",
+        "running",
+        "study groups"
+      ],
+      "availability": [
+        "wed-evening",
+        "tue-evening",
+        "mon-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-uma",
+      "community_id": "quarry",
+      "cluster_id": "quarry-rooftop",
+      "display_name": "Uma",
+      "emoji_avatar": "🙂",
+      "lat": 30.287378,
+      "lng": -97.74477,
+      "unit_label": "Fictional residence uma",
+      "interests": [
+        "running",
+        "books",
+        "climbing"
+      ],
+      "availability": [
+        "mon-evening",
+        "wed-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-june",
+      "community_id": "quarry",
+      "cluster_id": "quarry-rooftop",
+      "display_name": "June",
+      "emoji_avatar": "🚲",
+      "lat": 30.287447,
+      "lng": -97.744725,
+      "unit_label": "Fictional residence june",
+      "interests": [
+        "gaming",
+        "film"
+      ],
+      "availability": [
+        "fri-evening",
+        "tue-evening"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    },
+    {
+      "id": "quarry-ash",
+      "community_id": "quarry",
+      "cluster_id": "quarry-rooftop",
+      "display_name": "Ash",
+      "emoji_avatar": "📚",
+      "lat": 30.28725,
+      "lng": -97.744666,
+      "unit_label": "Fictional residence ash",
+      "interests": [
+        "climbing",
+        "study groups",
+        "running"
+      ],
+      "availability": [
+        "tue-evening",
+        "sat-afternoon"
+      ],
+      "verified": true,
+      "is_demo_user": false
+    }
+  ],
+  "hangouts": [
+    {
+      "id": "quarry-hangout-001",
+      "a_id": "quarry-you",
+      "b_id": "quarry-anika",
+      "date": "2026-09-15",
+      "kind": "garden swap"
+    },
+    {
+      "id": "quarry-hangout-002",
+      "a_id": "quarry-you",
+      "b_id": "quarry-anika",
+      "date": "2026-10-22",
+      "kind": "garden swap"
+    },
+    {
+      "id": "quarry-hangout-003",
+      "a_id": "quarry-you",
+      "b_id": "quarry-cole",
+      "date": "2026-10-08",
+      "kind": "coffee"
+    },
+    {
+      "id": "quarry-hangout-004",
+      "a_id": "quarry-you",
+      "b_id": "quarry-cole",
+      "date": "2026-10-05",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-005",
+      "a_id": "quarry-you",
+      "b_id": "quarry-cole",
+      "date": "2026-10-23",
+      "kind": "garden swap"
+    },
+    {
+      "id": "quarry-hangout-006",
+      "a_id": "quarry-you",
+      "b_id": "quarry-rhea",
+      "date": "2026-10-08",
+      "kind": "garden swap"
+    },
+    {
+      "id": "quarry-hangout-007",
+      "a_id": "quarry-you",
+      "b_id": "quarry-rhea",
+      "date": "2026-09-27",
+      "kind": "coffee"
+    },
+    {
+      "id": "quarry-hangout-008",
+      "a_id": "quarry-you",
+      "b_id": "quarry-ari",
+      "date": "2026-09-11",
+      "kind": "walk"
+    },
+    {
+      "id": "quarry-hangout-009",
+      "a_id": "quarry-you",
+      "b_id": "quarry-ari",
+      "date": "2026-09-20",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-010",
+      "a_id": "quarry-you",
+      "b_id": "quarry-ari",
+      "date": "2026-10-19",
+      "kind": "garden swap"
+    },
+    {
+      "id": "quarry-hangout-011",
+      "a_id": "quarry-you",
+      "b_id": "quarry-cass",
+      "date": "2026-09-21",
+      "kind": "garden swap"
+    },
+    {
+      "id": "quarry-hangout-012",
+      "a_id": "quarry-you",
+      "b_id": "quarry-cass",
+      "date": "2026-09-18",
+      "kind": "walk"
+    },
+    {
+      "id": "quarry-hangout-013",
+      "a_id": "quarry-you",
+      "b_id": "quarry-cass",
+      "date": "2026-09-29",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-014",
+      "a_id": "quarry-anika",
+      "b_id": "quarry-cole",
+      "date": "2026-09-30",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-015",
+      "a_id": "quarry-anika",
+      "b_id": "quarry-nell",
+      "date": "2026-09-03",
+      "kind": "coffee"
+    },
+    {
+      "id": "quarry-hangout-016",
+      "a_id": "quarry-anika",
+      "b_id": "quarry-nell",
+      "date": "2026-08-28",
+      "kind": "walk"
+    },
+    {
+      "id": "quarry-hangout-017",
+      "a_id": "quarry-anika",
+      "b_id": "quarry-ash",
+      "date": "2026-10-05",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-018",
+      "a_id": "quarry-cole",
+      "b_id": "quarry-tobin",
+      "date": "2026-10-06",
+      "kind": "walk"
+    },
+    {
+      "id": "quarry-hangout-019",
+      "a_id": "quarry-rhea",
+      "b_id": "quarry-bea",
+      "date": "2026-09-10",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-020",
+      "a_id": "quarry-rhea",
+      "b_id": "quarry-ari",
+      "date": "2026-09-04",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-021",
+      "a_id": "quarry-rhea",
+      "b_id": "quarry-ari",
+      "date": "2026-09-30",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-022",
+      "a_id": "quarry-rhea",
+      "b_id": "quarry-mira",
+      "date": "2026-09-25",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-023",
+      "a_id": "quarry-rhea",
+      "b_id": "quarry-mira",
+      "date": "2026-09-30",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-024",
+      "a_id": "quarry-tobin",
+      "b_id": "quarry-nell",
+      "date": "2026-08-27",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-025",
+      "a_id": "quarry-tobin",
+      "b_id": "quarry-nell",
+      "date": "2026-08-30",
+      "kind": "coffee"
+    },
+    {
+      "id": "quarry-hangout-026",
+      "a_id": "quarry-belle",
+      "b_id": "quarry-imani",
+      "date": "2026-09-30",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-027",
+      "a_id": "quarry-belle",
+      "b_id": "quarry-imani",
+      "date": "2026-09-02",
+      "kind": "garden swap"
+    },
+    {
+      "id": "quarry-hangout-028",
+      "a_id": "quarry-paz",
+      "b_id": "quarry-tariq",
+      "date": "2026-09-19",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-029",
+      "a_id": "quarry-paz",
+      "b_id": "quarry-tariq",
+      "date": "2026-09-12",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-030",
+      "a_id": "quarry-paz",
+      "b_id": "quarry-kit",
+      "date": "2026-09-23",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-031",
+      "a_id": "quarry-paz",
+      "b_id": "quarry-kit",
+      "date": "2026-10-10",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-032",
+      "a_id": "quarry-imani",
+      "b_id": "quarry-sasha",
+      "date": "2026-09-21",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-033",
+      "a_id": "quarry-imani",
+      "b_id": "quarry-cass",
+      "date": "2026-08-28",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-034",
+      "a_id": "quarry-imani",
+      "b_id": "quarry-tariq",
+      "date": "2026-10-15",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-035",
+      "a_id": "quarry-imani",
+      "b_id": "quarry-tariq",
+      "date": "2026-09-07",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-036",
+      "a_id": "quarry-hugo",
+      "b_id": "quarry-maren",
+      "date": "2026-10-02",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-037",
+      "a_id": "quarry-hugo",
+      "b_id": "quarry-maren",
+      "date": "2026-09-20",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-038",
+      "a_id": "quarry-dina",
+      "b_id": "quarry-penny",
+      "date": "2026-10-16",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-039",
+      "a_id": "quarry-dina",
+      "b_id": "quarry-kit",
+      "date": "2026-09-12",
+      "kind": "garden swap"
+    },
+    {
+      "id": "quarry-hangout-040",
+      "a_id": "quarry-ren",
+      "b_id": "quarry-mira",
+      "date": "2026-10-16",
+      "kind": "coffee"
+    },
+    {
+      "id": "quarry-hangout-041",
+      "a_id": "quarry-ren",
+      "b_id": "quarry-tariq",
+      "date": "2026-10-14",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-042",
+      "a_id": "quarry-bea",
+      "b_id": "quarry-maren",
+      "date": "2026-09-08",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-043",
+      "a_id": "quarry-bea",
+      "b_id": "quarry-uma",
+      "date": "2026-08-25",
+      "kind": "coffee"
+    },
+    {
+      "id": "quarry-hangout-044",
+      "a_id": "quarry-mira",
+      "b_id": "quarry-penny",
+      "date": "2026-10-17",
+      "kind": "board games"
+    },
+    {
+      "id": "quarry-hangout-045",
+      "a_id": "quarry-mira",
+      "b_id": "quarry-penny",
+      "date": "2026-10-05",
+      "kind": "chat"
+    },
+    {
+      "id": "quarry-hangout-046",
+      "a_id": "quarry-nell",
+      "b_id": "quarry-sol",
+      "date": "2026-09-09",
+      "kind": "coffee"
+    }
+  ],
+  "invites": [
+    {
+      "id": "quarry-study",
+      "community_id": "quarry",
+      "host_id": "quarry-anika",
+      "title": "Courtyard study break",
+      "activity": "study group",
+      "starts_at": "2026-10-28T16:00:00-05:00",
+      "capacity": 8,
+      "lat": 30.287,
+      "lng": -97.745,
+      "exact_location": "Fictional Quarry courtyard",
+      "place_hint": "courtyard",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    },
+    {
+      "id": "quarry-sunset",
+      "community_id": "quarry",
+      "host_id": "quarry-maren",
+      "title": "Rooftop sunset",
+      "activity": "rooftop meetup",
+      "starts_at": "2026-10-29T18:15:00-05:00",
+      "capacity": 10,
+      "lat": 30.2873,
+      "lng": -97.7448,
+      "exact_location": "Fictional rooftop deck",
+      "place_hint": "rooftop common space",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    },
+    {
+      "id": "quarry-bookswap",
+      "community_id": "quarry",
+      "host_id": "quarry-imani",
+      "title": "Laundry-room book swap",
+      "activity": "book swap",
+      "starts_at": "2026-10-27T19:00:00-05:00",
+      "capacity": 7,
+      "lat": 30.2868,
+      "lng": -97.7452,
+      "exact_location": "Fictional laundry room S",
+      "place_hint": "South Wing common area",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    },
+    {
+      "id": "quarry-movie",
+      "community_id": "quarry",
+      "host_id": "quarry-ari",
+      "title": "Floor 5 movie night",
+      "activity": "film",
+      "starts_at": "2026-10-30T20:00:00-05:00",
+      "capacity": 7,
+      "lat": 30.287,
+      "lng": -97.7448,
+      "exact_location": "Fictional Floor 5 lounge",
+      "place_hint": "Floor 5 lounge",
+      "requires_approval": true,
+      "status": "open",
+      "source": "manual"
+    }
+  ],
+  "rsvps": [],
+  "statuses": [
+    {
+      "id": "quarry-status-cole",
+      "member_id": "quarry-cole",
+      "text": "Free for a study break",
+      "until": "2026-10-29T18:00:00-05:00"
+    },
+    {
+      "id": "quarry-status-imani",
+      "member_id": "quarry-imani",
+      "text": "Up for a quick game",
+      "until": "2026-10-29T21:00:00-05:00"
+    },
+    {
+      "id": "quarry-status-maren",
+      "member_id": "quarry-maren",
+      "text": "Around for sunset",
+      "until": "2026-10-30T19:00:00-05:00"
+    }
+  ],
+  "drafts": [],
+  "api_usage": []
+}
