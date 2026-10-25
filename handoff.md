@@ -1,6 +1,6 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-24 23:50 America/Chicago by lead/session 2_
+_Last updated: 2026-10-24 23:53 America/Chicago by lead/session 2_
 _Current phase: 5, 8–9 — live Spark nudge repair, P0 frontend and deployment | Gates passed: G1 ☑ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
@@ -8,12 +8,12 @@ G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after o
 
 ## Next up (do these in order)
 1. Fix live nudge output starvation in `backend/app/ai/provider.py` / `spark.py`, run one grounded Priya live check, inspect `/api/usage`, and switch back to mock.
-2. Commit the exact Cloud Run/Vercel steps added to `DEPLOY.md`; await H5 login/project IDs and H9 public deployment/cost approval while completing local live checks.
-3. After H5/H9, deploy P0, verify the full loop and cache hits three times, then request H6 phone checks. Stay in P0 until deployed live G2 passes.
+2. Review and commit the Vercel monorepo command correction in `DEPLOY.md` and updated `CONTEXT.md`; verify the optional local gcloud download checksum if it finishes.
+3. Hold publication until the human signs in to GCP/Vercel and explicitly approves H9. Then deploy P0, verify the full loop and cache hits three times, and request H6 phone checks. Stay in P0 until deployed live G2 passes.
 
 ## In progress (exact state)
-- Task: Finish live Spark nudge/draft; write exact deployment sequence; wait for H5/H9 reply without idling.
-- Files touched since last commit: `backend/app/ai/provider.py`, `backend/app/ai/spark.py`, `backend/tests/test_ai.py`, `scripts/smoke_spark.py` (AI agent editing), `DEPLOY.md`, `handoff.md`.
+- Task: Finish live Spark nudge/draft; optional local gcloud CLI download is in progress. Publication is on hold at the human's request.
+- Files touched since last commit: `backend/app/ai/provider.py`, `backend/app/ai/spark.py`, `backend/tests/test_ai.py`, `scripts/smoke_spark.py` (AI agent editing), `CONTEXT.md`, `handoff.md`. Deployment commands are committed in `a2d6e9e`.
 - State: Mock backend at `http://127.0.0.1:8000` serves `/api/health` and `/docs` (200). G1 live smoke returned visible text and usage after setting `reasoning_effort=minimal`; product default was set to `low`. One live Priya nudge call selected Priya/Duval but returned degraded fallback because 300 completion tokens were exhausted by reasoning. Both live and mock servers were started with MiniLM from ignored `.tools/`; confirm live server state before another call. Frontend 390×844 home render was reviewed by the frontend agent; production build passes outside the sandbox (sandbox esbuild file read was denied). QA privacy fix passes and `.dockerignore` excludes `.env`/`.env.*`. Docker daemon unavailable.
 - Last command run + result: backend seed generator and seed check passed, Duval 0/6 and South Wing 0/8; backend full suite 24 passed, one Starlette warning; mock `/health` and `/docs` 200; `npm.cmd run build` passed outside sandbox. Live `/api/usage`: $0.0001686 ($0.000072 smoke, $0.0000966 nudge).
 
@@ -31,6 +31,7 @@ G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after o
 | 9 (QA fix) | Exclude local `.env` secrets from backend Docker build context | `.dockerignore` inspected; Docker build pending daemon | `8999870` |
 | 5 (samples) | Ten fictional mock prompt/output pairs for nudges, drafts, and invite parsing | QA checked seed facts, safety wording, numbering, and JSON | `eeb176a` |
 | 8 (implementation) | Vite React frontend, map, sheets, editable composer, voice preview, Reach animation, A/B toggle | `npm.cmd run build` passed; 390×844 home screenshot reviewed; Vite `/api` proxy passed | `fc308c6` |
+| 9 (deployment instructions) | Exact Cloud Run source-deploy and Vercel commands, env sequence | Official platform docs checked; H5/H9 pending | `a2d6e9e` |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
@@ -43,9 +44,9 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 | H1 | done | Human confirmed H1; `.env` has a nonempty `META_MODEL_API_KEY` and `MUSE_SPARK_MODEL=muse-spark-1.3-contributor`. Credit confirmation accepted from human's H1 reply. Live G1 check next; never print key. |
 | H2 | done | Six workshop answers recorded in `CONTEXT.md`. Official Contributor limits correct the workshop's standard-model limits. |
 | H3 | done | Five supplied JPG mockups converted to the exact PNG filenames. Frontend must match them. |
-| H5 | open | Asked for GCP/Vercel CLI login or project setup, GCP project ID and Vercel project name, and host env entry. Deployment plan is in `DEPLOY.md`. |
+| H5 | open, human action pending | Human asked whether the agent could log into accounts. AGENTS.md §§2, 6 assign credential entry and CLI login to the human. Human has not signed in or given project IDs; hold deployment. |
 | H6 | not yet raised | Phone voice-post check after deployed URL exists. |
-| H9 | open | Asked whether to approve public Cloud Run/Vercel deployment and possible Cloud Run build/runtime charges; min instances 0 and no domain planned. Do not deploy before approval. |
+| H9 | hold, not approved | Human said to hold deployment unless the agent can log in. Agent cannot enter credentials under AGENTS.md §2. No publication or Cloud Run billing action until human explicitly approves. |
 
 ## Decisions & deviations from the guide
 | When | Decision | Why |
@@ -63,6 +64,7 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 | 2026-10-24 | Exclude `.env` and `.env.*` from the backend Docker build context. | QA found that remote builders otherwise receive local secrets even when Dockerfile COPY is explicit. |
 | 2026-10-24 | Use Meta documented `reasoning_effort=minimal` for G1 smoke and `low` for product calls; include it in cache keys. | Default reasoning spent 40 and then 200 completion tokens without visible text. The minimal smoke call returned text and usage. Source: https://dev.meta.ai/docs/reasoning. |
 | 2026-10-24 | Select Cloud Run `us-central1` / `porchlight-api` and Vercel `porchlight-ui`, with zero minimum instances and no custom domain. | Phase 9 calls for a public HTTPS backend/frontend; this keeps the demo path simple and avoids optional paid resources. Deployment itself awaits H5/H9. |
+| 2026-10-24 | Hold deployment after the human's H5/H9 reply. | The human asked whether the agent can log in; AGENTS.md prohibits agent credential entry. Continue local P0 checks until the human signs in and explicitly approves public deployment/cost. |
 
 ## Meta API facts confirmed
 Human confirmed H1 and `.env` contains the key and `muse-spark-1.3-contributor`. G1 passed: Spark returned visible text and a usage object. A live nudge request selected Priya/Duval but its 300-token budget yielded no visible text, so provider metered it and returned a degraded fallback; Phase 5 live criterion remains open. H2 answers choose the standalone Meta API agent path and skip Graph API. Meta docs confirm Contributor pricing $0.10/M input, $0.20/M output, 150 RPM/3M TPM (https://dev.meta.ai/docs/pricing-rate-limits). Voice Path A is documented by Meta: multipart POST `/v1/asr/transcribe`, model `muse-voice-transcribe-1.0`, `request` JSON plus WAV `audio`, bearer header, 24 kHz mono 16-bit PCM, JSON `transcript`; pricing $0.18/hour (https://dev.meta.ai/docs/speech-to-text).
@@ -80,7 +82,7 @@ None.
 - Phase 5 live Priya nudge returned `degraded=true` because the model used the entire 300-token budget on reasoning; a larger output budget must be tested.
 - Live Voice, deployed G2, and phone flow are not verified yet.
 - Computer-use browser inventory is empty in session 2; the 390px home screenshot was reviewed, while click-through UI testing remains for deployed H6.
-- H5/H9 account setup and public deployment approval are pending; no URLs exist yet.
+- H5 account setup and H9 public deployment approval are pending; human requested a hold. No URLs exist yet.
 - A stateless hosted instance can lose the local usage ledger on cold start. Reset demo and same-file restarts preserve it.
 - Docker daemon is not running locally; the Dockerfile has not been built here.
 

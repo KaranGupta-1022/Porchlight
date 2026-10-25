@@ -270,7 +270,7 @@ class HealthResponse(BaseModel):
 
 ## Meta API facts and workshop answers
 
-The guide lists base URL https://api.meta.ai/v1 and an OpenAI-compatible SDK. H1 is deferred by the human, so no Meta call has been made and account model availability/credit remain unconfirmed. H2 workshop answers were supplied by the human on 2026-10-24:
+The guide lists base URL https://api.meta.ai/v1 and an OpenAI-compatible SDK. H1 was confirmed by the human on 2026-10-24; the key is in local `.env` and `muse-spark-1.3-contributor` is configured. The live Spark smoke check returned visible text and usage, so G1 passed. Never print or commit the key. H2 workshop answers were supplied by the human on 2026-10-24:
 
 1. A true Muse connector needs OAuth-shaped trust and would make judges authenticate. Build a standalone agent using the Meta Model API for a frictionless demo, after G2. The guide's Spark function-calling fallback is the intended in-app path.
 2. Voice supports live and static uploads. Use a short uploaded file for this sprint. Official Meta docs specify WAV for the batch endpoint; convert browser audio to WAV before upload.

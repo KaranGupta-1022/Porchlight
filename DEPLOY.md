@@ -54,11 +54,11 @@ Browser microphone access needs HTTPS on a phone. After H5 account setup, verify
 
 ### Vercel sequence after the backend URL exists
 
-The selected project name is `porchlight-ui`, root directory `frontend/`, output directory `dist`. The human signs in with `vercel login` (or links an existing project) and handles any account terms. Then run from `frontend/`:
+The selected project name is `porchlight-ui`, root directory `frontend/`, output directory `dist`. The human signs in with `vercel login` (or links an existing project) and handles any account terms. Set `VITE_API_BASE` to `<BACKEND_URL>` in the Vercel project's Production environment settings so later builds retain it. Run the CLI from the repository root because the Vercel project has `frontend/` configured as its Root Directory:
 
 ```powershell
 npx vercel link
-npx vercel deploy --prod --build-env VITE_API_BASE=<BACKEND_URL>
+npx vercel deploy --prod
 ```
 
-If the project is created in Vercel's dashboard, set its root directory to `frontend/` and build command to `npm run build`. Copy the resulting HTTPS origin into Cloud Run's `FRONTEND_ORIGIN`. Open the deployed URL on two phones for H6, then run the live core loop three times and inspect `/api/usage` for cache hits. No custom domain or minimum instance is in scope without a separate H9 approval.
+If the project is linked to the Git repository, `npx vercel link --repo` can link it from the repo root instead. If the project is created in Vercel's dashboard, set its root directory to `frontend/` and build command to `npm run build`. Copy the resulting HTTPS origin into Cloud Run's `FRONTEND_ORIGIN`. Open the deployed URL on two phones for H6, then run the live core loop three times and inspect `/api/usage` for cache hits. No custom domain or minimum instance is in scope without a separate H9 approval.
