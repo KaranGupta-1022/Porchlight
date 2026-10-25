@@ -53,10 +53,10 @@ def _validate(text: str, model: type, keys: set[str]) -> Any:
 
 
 def _ask_json(messages: list[dict[str, str]], feature: str, fallback: dict[str, Any],
-              model: type, keys: set[str], max_tokens: int = 300) -> tuple[Any, bool]:
+              model: type, keys: set[str], max_tokens: int = 500) -> tuple[Any, bool]:
     fallback_text = json.dumps(fallback, ensure_ascii=False)
     result = provider.complete(messages, feature=feature, fallback=fallback_text,
-                               max_tokens=max_tokens)
+                               max_tokens=max_tokens, reasoning_effort="minimal")
     try:
         return _validate(str(result.value), model, keys), result.degraded
     except (ValueError, ValidationError, TypeError):
@@ -64,7 +64,8 @@ def _ask_json(messages: list[dict[str, str]], feature: str, fallback: dict[str, 
             retry_messages = [*messages, {"role": "developer", "content":
                                             "Return only valid JSON matching the requested schema exactly."}]
             retry = provider.complete(retry_messages, feature=feature,
-                                      fallback=fallback_text, max_tokens=max_tokens)
+                                      fallback=fallback_text, max_tokens=max_tokens,
+                                      reasoning_effort="minimal")
             try:
                 return _validate(str(retry.value), model, keys), retry.degraded
             except (ValueError, ValidationError, TypeError):
@@ -137,7 +138,7 @@ def draft_message(you: Any, recipient: Any, context: str = "",
     messages = [{"role": "developer", "content": DEVELOPER_RULES},
                 {"role": "user", "content": "Draft an editable first message. "
                  + json.dumps(request, ensure_ascii=False)}]
-    parsed, degraded = _ask_json(messages, "draft", fallback, DraftJSON, {"text"}, 180)
+    parsed, degraded = _ask_json(messages, "draft", fallback, DraftJSON, {"text"}, 500)
     if len(re.split(r"[.!?]+", parsed.text.strip())) - 1 > 3:
         return fallback["text"], True
     return parsed.text, degraded

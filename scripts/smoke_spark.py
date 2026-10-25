@@ -19,11 +19,12 @@ def main() -> int:
         return 2
     result = provider.complete(
         [{"role": "user", "content": "Reply with exactly five words."}],
-        feature="smoke", fallback="The live Spark check was unavailable.", max_tokens=40,
+        feature="smoke", fallback="The live Spark check was unavailable.",
+        max_tokens=200, reasoning_effort="minimal",
     )
     print(result.value)
     print(result.usage)
-    return 1 if result.degraded or result.usage is None else 0
+    return 1 if result.degraded or result.usage is None or not str(result.value).strip() else 0
 
 
 if __name__ == "__main__":

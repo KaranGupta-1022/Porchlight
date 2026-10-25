@@ -47,6 +47,23 @@ def test_invalid_json_retried_once_then_fallback(monkeypatch):
     assert "Return only valid JSON" in calls[1][-1]["content"]
 
 
+def test_json_tasks_reserve_visible_output_with_minimal_reasoning(monkeypatch):
+    monkeypatch.setenv("AI_MODE", "live")
+    calls = []
+
+    def complete(messages, **kwargs):
+        calls.append(kwargs)
+        return provider.ProviderResult(kwargs["fallback"])
+
+    monkeypatch.setattr(provider, "complete", complete)
+    spark.make_nudge(YOU, PRIYA, {}, GAP)
+    spark.draft_message(YOU, PRIYA)
+    spark.parse_invite("Board games Friday at six, four spots", YOU,
+                       datetime(2026, 10, 24, tzinfo=timezone.utc))
+    assert [call["max_tokens"] for call in calls] == [500, 500, 500]
+    assert all(call["reasoning_effort"] == "minimal" for call in calls)
+
+
 def test_fenced_json_is_accepted(monkeypatch):
     monkeypatch.setenv("AI_MODE", "live")
     canned = provider.fixture("nudge")

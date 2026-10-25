@@ -144,10 +144,12 @@ def _reserve_estimate(messages: list[dict[str, Any]], max_tokens: int) -> float:
 
 def complete(messages: list[dict[str, Any]], *, feature: str,
              fallback: str, max_tokens: int = 300,
-             model: str | None = None) -> ProviderResult:
+             model: str | None = None,
+             reasoning_effort: str = "minimal") -> ProviderResult:
     """Return raw Spark text. A caller may validate JSON and retry once."""
     model = model or os.getenv("MUSE_SPARK_MODEL", "muse-spark-1.3-contributor")
-    params: dict[str, Any] = {"max_tokens": max_tokens}
+    params: dict[str, Any] = {"max_tokens": max_tokens,
+                              "reasoning_effort": reasoning_effort}
     path = _cache_path(model, messages, params)
     if ai_mode() == "mock":
         return ProviderResult(fallback)
@@ -170,6 +172,7 @@ def complete(messages: list[dict[str, Any]], *, feature: str,
                         timeout=15.0, max_retries=0)
         response = client.chat.completions.create(
             model=model, messages=messages, max_tokens=max_tokens,
+            reasoning_effort=reasoning_effort,
         )
         value = response.choices[0].message.content or ""
         usage_obj = response.usage
@@ -185,6 +188,9 @@ def complete(messages: list[dict[str, Any]], *, feature: str,
         usd = (in_tokens * _price("PRICE_IN_PER_M", 0.10)
                + out_tokens * _price("PRICE_OUT_PER_M", 0.20)) / 1_000_000
         _record(feature, model, in_tokens=in_tokens, out_tokens=out_tokens, usd=usd)
+        if not value.strip():
+            LOG.warning("Meta returned no visible text for %s", feature)
+            return _fallback(feature, model, fallback, path)
         _write_cache(path, {"value": value, "usage": usage})
         return ProviderResult(value, usage=usage)
     except Exception as exc:

@@ -1,22 +1,22 @@
 # Porchlight — handoff
 
-_Last updated: 2026-10-25 00:22 America/Chicago by lead/session 2_
-_Current phase: 5, 9 — live Spark nudge repair and P0 deployment | Gates passed: G1 ☑ G2 ☐ G3 ☐ G4 ☐_
+_Last updated: 2026-10-25 00:27 America/Chicago by lead/session 2_
+_Current phase: 6, 9 — live Voice and P0 deployment | Gates passed: G1 ☑ G2 ☐ G3 ☐ G4 ☐_
 
 ## TL;DR (3 lines max)
-G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after one live nudge attempt. The local mock P0 API loop passes in both communities, 24 backend tests pass, and the frontend build passes. The live Priya nudge selected the right candidate but returned a degraded fallback because its 300-token budget was spent on reasoning; fix that before deploying.
+G1 passed; live Priya nudge and editable draft both return grounded text without degradation. Total recorded spend is $0.0005699. The local mock P0 API loop passes in both communities, 28 backend tests pass, and the frontend build passes. H9 is approved; commit/push next.
 
 ## Next up (do these in order)
-1. Fix live nudge output starvation in `backend/app/ai/provider.py` / `spark.py`, run one grounded Priya live check, inspect `/api/usage`, and switch back to mock.
-2. Review and commit the Render Free Dockerfile, `render.yaml`, and `DEPLOY.md`; check deployment prerequisites and hosted memory after H9.
-3. Hold publication until the human explicitly approves H9. The human has signed in to Render/Vercel. Then push/deploy P0, verify the full loop and cache hits three times, and request H6 phone checks. Stay in P0 until deployed live G2 passes.
+1. Commit the reviewed live Spark fix in `backend/app/ai/provider.py`, `spark.py`, `backend/tests/test_ai.py`, `scripts/smoke_spark.py`, and this handoff; push `main` to `origin` (remote main was checked unchanged at `315a780`).
+2. Human imports root `render.yaml` in Render and the `frontend/` project in Vercel (website sign-ins only), enters the Meta key in Render settings, and sends both URLs. Check hosted build/memory, then set `AI_MODE=live` for G2.
+3. Verify deployed full loop and cache hits three times and request H6 phone voice checks. Stay in P0 until deployed live G2 passes.
 
 ## In progress (exact state)
-- Task: Finish live Spark nudge/draft and targeted Voice check; review and commit the completed Render/Vercel prep. The human has signed in to the hosting dashboards, but public deployment is on hold pending H9 approval.
+- Task: Commit verified live Spark changes and push. Render/Vercel prep is committed in `3eb6ea3`; H9 public deployment on free plans and GitHub push are approved. The human signed in to websites only and will create the projects. Live Voice/phone test remains for deployed G2.
 - Continuity note: context was compacted while the agents were editing. The seed vector artifact and production requirements are committed in `aafa773`; graph loader is committed in `1ff53d7`; AI and devops changes remain uncommitted and require review before committing.
 - Files touched since last commit: `backend/app/ai/provider.py`, `backend/app/ai/spark.py`, `backend/tests/test_ai.py`, `scripts/smoke_spark.py` (AI agent editing); `DEPLOY.md`, `render.yaml`, `backend/Dockerfile` (devops); `handoff.md`. Vercel correction and context update are committed in `42d51fb`.
-- State: Mock backend at `http://127.0.0.1:8000` serves `/api/health` and `/docs` (200). G1 live smoke returned visible text and usage after setting `reasoning_effort=minimal`; product default was set to `low`. One live Priya nudge call selected Priya/Duval but returned degraded fallback because 300 completion tokens were exhausted by reasoning. A fresh local TestClient startup now reports `/api/health` 200 with `torch_loaded=False`. Frontend 390×844 home render was reviewed by the frontend agent; production build passes outside the sandbox (sandbox esbuild file read was denied). QA privacy fix passes and `.dockerignore` excludes `.env`/`.env.*`. Docker daemon unavailable.
-- Last command run + result: precomputed 70 normalized 384-dimensional vectors; backend seed check passed, Duval 0/6 and South Wing 0/8; backend full suite 28 passed, one Starlette warning; mock `/health` and `/docs` 200; `npm.cmd run build` passed outside sandbox. Live `/api/usage` at last check: $0.0001686 ($0.000072 smoke, $0.0000966 nudge).
+- State: Mock backend at `http://127.0.0.1:8000` serves `/api/health` and `/docs` (200). G1 live smoke returned visible text and usage. Live Priya nudge and draft both generated non-degraded grounded text using `reasoning_effort=minimal` and 500 tokens. The prior draft 300-token limit truncated JSON after 267–274 reasoning tokens; a targeted 500-token draft passed. Fresh local mock TestClient health 200 with `torch_loaded=False`. Frontend 390×844 home render reviewed; production build passes outside sandbox. QA privacy fix passes and `.dockerignore` excludes `.env`/`.env.*`. Docker daemon unavailable.
+- Last command run + result: targeted live draft returned `degraded=false`, `/api/usage` $0.0005699. Full backend suite 28 passed, one Starlette warning; seed check passed, Duval 0/6 and South Wing 0/8; `npm.cmd run build` passed outside sandbox; local health 200 without Torch.
 
 ## Completed
 | Phase | Task | Verified by | Commit |
@@ -25,9 +25,10 @@ G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after o
 | 2 | Deterministic A/B seeds, SQLite reseed, public serializers | Seed check; 4 focused tests passed | `744f1fb` |
 | 3 | P0 mock API routes, public serializers, spend-preserving reset | HTTP app checks; 21-test backend suite | `54ac736` |
 | 4 | Reach, gaps, bridge scoring with local MiniLM | 4 graph tests; actual MiniLM loaded and ranked Priya first | `f32914a` |
-| 5–6 | Mock and live-capable Spark/Voice provider, cache, cap, batch WAV upload | 21-test suite; real ffmpeg WAV conversion. Live checks pending H1. | `ab1c365` |
+| 5–6 | Mock and live-capable Spark/Voice provider, cache, cap, batch WAV upload | 21-test suite; real ffmpeg WAV conversion. Live Voice pending H6. | `ab1c365` |
 | 9 (local prep) | Dockerfile, build-time MiniLM, ffmpeg, deployment notes | File review; container build pending Docker daemon. Full mock API loop passed locally. | `400d444` |
 | 0 (G1) | Live Spark smoke returns text and usage | `AI_MODE=live` `scripts/smoke_spark.py`; `/api/usage` read | pending commit for reasoning fix |
+| 5 (live) | Minimal reasoning and 500-token JSON budget produce grounded nudge and editable draft | Live Priya nudge and draft non-degraded; full backend suite 28 passed | pending commit |
 | 3 (QA fix) | Reject numbered exact addresses in invite title, activity, and place hint | 3 focused privacy cases; 24-test backend suite | `c57a09f` |
 | 9 (QA fix) | Exclude local `.env` secrets from backend Docker build context | `.dockerignore` inspected; Docker build pending daemon | `8999870` |
 | 5 (samples) | Ten fictional mock prompt/output pairs for nudges, drafts, and invite parsing | QA checked seed facts, safety wording, numbering, and JSON | `eeb176a` |
@@ -35,7 +36,7 @@ G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after o
 | 9 (deployment instructions) | Exact Cloud Run source-deploy and Vercel commands, env sequence | Official platform docs checked; H5/H9 pending | `a2d6e9e` |
 | 9 (Render prep) | Generated normalized MiniLM vectors for 70 seeded residents and slim runtime requirements | Re-ran local generator; validated 70 vectors at 384 dimensions, matching seed hashes/interests | `aafa773` |
 | 4/9 (Render graph) | Load seeded MiniLM vectors without Torch at runtime; reject stale artifacts | Full backend suite 28 passed; seed check passed; graph tests block model imports | `1ff53d7` |
-| 9 (Render deployment) | Render Free Blueprint, slim Dockerfile, Vercel setup instructions | YAML/static checks, local health 200 without Torch; hosted build pending H9 | pending commit |
+| 9 (Render deployment) | Render Free Blueprint, slim Dockerfile, Vercel setup instructions | YAML/static checks, local health 200 without Torch; hosted build pending | `3eb6ea3` |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
@@ -45,12 +46,12 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 ## Human gates
 | Gate | Status (open/done/skipped) | Notes |
 |---|---|---|
-| H1 | done | Human confirmed H1; `.env` has a nonempty `META_MODEL_API_KEY` and `MUSE_SPARK_MODEL=muse-spark-1.3-contributor`. Credit confirmation accepted from human's H1 reply. Live G1 check next; never print key. |
+| H1 | done | Human confirmed H1; `.env` has a nonempty `META_MODEL_API_KEY` and `MUSE_SPARK_MODEL=muse-spark-1.3-contributor`. Credit confirmation accepted from human's H1 reply. G1 and local live nudge/draft passed; never print key. |
 | H2 | done | Six workshop answers recorded in `CONTEXT.md`. Official Contributor limits correct the workshop's standard-model limits. |
 | H3 | done | Five supplied JPG mockups converted to the exact PNG filenames. Frontend must match them. |
-| H5 | sign-in done; project setup pending | Human confirmed they signed in to Render and Vercel. Neither CLI is installed in this shell and browser automation has no browser surface; repo import/project creation and final URLs remain pending. Render + Vercel selected. Hold deployment pending H9. |
+| H5 | sign-in done; project setup pending | Human confirmed website sign-ins to Render and Vercel and said they can create projects. Neither CLI is installed in this shell and browser automation has no browser surface; repo import/project creation and final URLs remain pending. Render + Vercel selected. |
 | H6 | not yet raised | Phone voice-post check after deployed URL exists. |
-| H9 | hold, not approved | Human previously said to hold deployment if the agent cannot log in. The human has since signed in to Render and Vercel; public deployment still needs explicit approval. No publication action yet. |
+| H9 | approved | Human explicitly approved pushing Porchlight commits to GitHub origin and publishing the demo on Render Free and Vercel Hobby. No GCP, custom domain, or paid tier. |
 
 ## Decisions & deviations from the guide
 | When | Decision | Why |
@@ -66,7 +67,7 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 | 2026-10-24 | Prepare Cloud Run/Render deployment artifacts but keep `AI_MODE=mock` until H1/G1. | H1 was deferred by the human; no live spend or unsupported live claim. Docker daemon and `gcloud`/`vercel` CLIs are unavailable in this shell. |
 | 2026-10-24 | Reject public invite text containing numbered street locations, including suffix-free street names. | QA found an exact-address leak through title/activity/place_hint. Conservative filtering can reject some numbered descriptions; privacy takes precedence. |
 | 2026-10-24 | Exclude `.env` and `.env.*` from the backend Docker build context. | QA found that remote builders otherwise receive local secrets even when Dockerfile COPY is explicit. |
-| 2026-10-24 | Use Meta documented `reasoning_effort=minimal` for G1 smoke and `low` for product calls; include it in cache keys. | Default reasoning spent 40 and then 200 completion tokens without visible text. The minimal smoke call returned text and usage. Source: https://dev.meta.ai/docs/reasoning. |
+| 2026-10-25 | Use Meta documented `reasoning_effort=minimal` for G1 smoke and product JSON calls, with 500 completion tokens for nudge/draft/parse; include reasoning in cache keys. | Default or low reasoning and 180–300 token caps left too little visible output. Live Priya nudge and draft passed with the higher budget. Source: https://dev.meta.ai/docs/reasoning. |
 | 2026-10-24 | Select Cloud Run `us-central1` / `porchlight-api` and Vercel `porchlight-ui`, with zero minimum instances and no custom domain. | Phase 9 calls for a public HTTPS backend/frontend; this keeps the demo path simple and avoids optional paid resources. Deployment itself awaits H5/H9. |
 | 2026-10-24 | Hold deployment after the human's H5/H9 reply. | The human asked whether the agent can log in; AGENTS.md prohibits agent credential entry. Continue local P0 checks until the human signs in and explicitly approves public deployment/cost. |
 | 2026-10-24 | Switch backend host from Cloud Run to Render Free and keep Vercel Hobby for the frontend. | Human has no GCP free credits and requested Render/Vercel. The guide permits Render. Official Render docs say Free web services spin down after 15 idle minutes and lose local SQLite/cache on restart; warm `/api/health` before demos and run cache-hit checks consecutively. No paid tier is authorized. |
@@ -74,13 +75,13 @@ P2: [ ] muse image assets [ ] (roadmap items untouched by design)
 | 2026-10-25 | Precompute MiniLM interest vectors for fictional seed residents and load them without Torch in Render Free runtime; trim production dependencies and skip Docker build-time MiniLM download. | Official Render Free plan has 512 MB RAM / 0.1 CPU (https://render.com/docs/compute-plans). Local Torch/MiniLM process reserved roughly 1.5 GB, likely exceeding free RAM. Precomputed normalized vectors preserve the guide's MiniLM interest similarity for fixed fictional seeds; this is a Phase 4/9 implementation deviation to keep P0 working on the chosen free host. |
 
 ## Meta API facts confirmed
-Human confirmed H1 and `.env` contains the key and `muse-spark-1.3-contributor`. G1 passed: Spark returned visible text and a usage object. A live nudge request selected Priya/Duval but its 300-token budget yielded no visible text, so provider metered it and returned a degraded fallback; Phase 5 live criterion remains open. H2 answers choose the standalone Meta API agent path and skip Graph API. Meta docs confirm Contributor pricing $0.10/M input, $0.20/M output, 150 RPM/3M TPM (https://dev.meta.ai/docs/pricing-rate-limits). Voice Path A is documented by Meta: multipart POST `/v1/asr/transcribe`, model `muse-voice-transcribe-1.0`, `request` JSON plus WAV `audio`, bearer header, 24 kHz mono 16-bit PCM, JSON `transcript`; pricing $0.18/hour (https://dev.meta.ai/docs/speech-to-text).
+Human confirmed H1 and `.env` contains the key and `muse-spark-1.3-contributor`. G1 passed: Spark returned visible text and a usage object. Live Priya nudge and draft now return non-degraded generated text with minimal reasoning and 500 tokens. H2 answers choose the standalone Meta API agent path and skip Graph API. Meta docs confirm Contributor pricing $0.10/M input, $0.20/M output, 150 RPM/3M TPM (https://dev.meta.ai/docs/pricing-rate-limits). Voice Path A is documented by Meta: multipart POST `/v1/asr/transcribe`, model `muse-voice-transcribe-1.0`, `request` JSON plus WAV `audio`, bearer header, 24 kHz mono 16-bit PCM, JSON `transcript`; pricing $0.18/hour (https://dev.meta.ai/docs/speech-to-text).
 
 ## Spend
-Live `/api/usage` total $0.0001686: smoke $0.000072 (3 calls), nudge $0.0000966 (1 call), cache hits 0. The first two smoke calls had empty visible text, the third passed G1. Cap $40; $10 reserve from the stated $50 credit. User confirmed H1.
+Live `/api/usage` total $0.0005699: smoke $0.000072 (3 calls), nudge $0.0002234 (2 calls), draft $0.0002745 (3 calls), cache hits 0. The first two smoke calls had empty visible text, the third passed G1. Cap $40; $10 reserve from the stated $50 credit. User confirmed H1.
 
 ## How to run
-From `backend`: `..\.tools\Python311\python.exe -m seed.generate_seed`; `..\.tools\Python311\python.exe -m app.seed_check`; `..\.tools\Python311\python.exe -m pytest -q tests --basetemp=..\.tools\pytest-audit-session2`; `$env:MINILM_MODEL_DIR=(Resolve-Path '..\.tools\all-MiniLM-L6-v2').Path; ..\.tools\Python311\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000`. Runtime and MiniLM are in ignored `.tools/`; requirements are installed there. `AI_MODE=mock` by default. G1 from repo root: set `$env:AI_MODE='live'`, run `.\.tools\Python311\python.exe scripts\smoke_spark.py`, then `Remove-Item Env:AI_MODE`; check `/api/usage`. From `frontend`: `npm.cmd install`; `npm.cmd run dev`; `npm.cmd run build`. Frontend build required sandbox escalation in session 2 because esbuild was denied reading Vite config. Dev frontend uses `http://localhost:5173` for backend CORS.
+From `backend`: `..\.tools\Python311\python.exe -m seed.generate_seed`; `..\.tools\Python311\python.exe -m app.seed_check`; `..\.tools\Python311\python.exe -m pytest -q tests --basetemp=..\.tools\pytest-p0-push`; `..\.tools\Python311\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000`. Python and the generation-only MiniLM model are in ignored `.tools/`; requirements are installed there. Runtime uses committed seed vectors and no Torch. `AI_MODE=mock` by default. G1 from repo root: set `$env:AI_MODE='live'`, run `.\.tools\Python311\python.exe scripts\smoke_spark.py`, then `Remove-Item Env:AI_MODE`; check `/api/usage`. From `frontend`: `npm.cmd install`; `npm.cmd run dev`; `npm.cmd run build`. Frontend build required sandbox escalation in session 2 because esbuild was denied reading Vite config. Dev frontend uses `http://localhost:5173` for backend CORS.
 
 Deployment after H9: follow `DEPLOY.md`. Import root `render.yaml` as a Render Free Blueprint from the Git repo; the human enters `META_MODEL_API_KEY` in Render settings. Create Vercel Hobby project with Root Directory `frontend/` and `VITE_API_BASE` set to the Render HTTPS origin, then set Render `FRONTEND_ORIGIN` to the Vercel HTTPS origin. For the local seeded vectors, from `backend`: `..\.tools\Python311\python.exe seed/precompute_vectors.py`; re-run if the fictional seed changes. The Render image uses `requirements.deploy.txt`, ffmpeg, and the checked-in vectors.
 
@@ -88,10 +89,10 @@ Deployment after H9: follow `DEPLOY.md`. Import root `render.yaml` as a Render F
 None.
 
 ## Known issues / bugs
-- Phase 5 live Priya nudge returned `degraded=true` because the model used the entire 300-token budget on reasoning; a larger output budget must be tested.
+- Live Spark nudge and draft pass. Live Muse Voice and deployed G2 are not yet verified.
 - Live Voice, deployed G2, and phone flow are not verified yet.
 - Computer-use browser inventory is empty in session 2; the 390px home screenshot was reviewed, while click-through UI testing remains for deployed H6.
-- H5 account sign-in is done; project creation and URLs are pending. H9 public deployment approval is still pending. No URLs exist yet.
+- H5 account sign-in is done; project creation and URLs are pending. H9 public deployment and GitHub push are approved. No URLs exist yet.
 - Render Free spins down after 15 idle minutes and its local SQLite/cache disappear on restart; this also resets the per-instance cost ledger. Warm before demos, run three cache-hit loops within one active instance, and check Meta account spend externally.
 - Render Free memory is 512 MB; current Torch/MiniLM runtime likely cannot fit. Precomputed vectors and slim production runtime are in progress and must be verified before deployment.
 - A stateless hosted instance can lose the local usage ledger on cold start. Reset demo and same-file restarts preserve it.
