@@ -123,3 +123,21 @@ def test_docs_validation_cors_and_missing_resources(client: TestClient) -> None:
     usage = client.get("/api/usage")
     assert usage.status_code == 200
     assert usage.json()["cost_cap_usd"] == 40.0
+
+
+@pytest.mark.parametrize("field,address", [
+    ("place_hint", "101 W 43rd Street"),
+    ("title", "500 E 6th St"),
+    ("activity", "1800 Duval"),
+])
+def test_invite_rejects_numbered_street_addresses(
+    client: TestClient, field: str, address: str,
+) -> None:
+    payload = {
+        "community_id": "hydepark", "title": "Board games", "activity": "board games",
+        "starts_at": "2026-10-30T18:00:00-05:00", "capacity": 4,
+        "place_hint": "near Avenue G",
+    }
+    payload[field] = address
+    response = client.post("/api/invites", json=payload)
+    assert response.status_code == 422

@@ -27,8 +27,10 @@ from ..models import (
 
 router = APIRouter(prefix="/api")
 PRIVATE_LOCATION_PATTERN = re.compile(
-    r"(?:\b\d{1,5}\s+(?:[A-Za-z]+\s+){0,3}"
+    r"(?:\b\d{1,5}\s+(?:[A-Za-z0-9-]+\s+){0,3}"
     r"(?:St(?:reet)?|Ave(?:nue)?|Rd|Road|Dr(?:ive)?|Ln|Lane|Blvd|Court|Ct)\b)"
+    r"|(?:\b\d{1,5}\s+(?:(?:N|S|E|W|NE|NW|SE|SW)\.?\s+)?"
+    r"[A-Za-z][A-Za-z0-9'-]{2,}\b)"
     r"|(?:#\s*\d+\b)|(?:\b(?:apt|apartment|unit|suite)\s*[#-]?\s*\w+\b)",
     re.IGNORECASE,
 )
@@ -288,7 +290,7 @@ async def voice_invite(community_id: str = Form(...), audio: UploadFile = File(.
 def create_invite(request: CreateInviteRequest) -> dict[str, Any]:
     if any(PRIVATE_LOCATION_PATTERN.search(value)
            for value in (request.title, request.activity, request.place_hint)):
-        raise HTTPException(status_code=422, detail="Use a block-level place hint")
+        raise HTTPException(status_code=422, detail="Use block-level locations in public fields")
     with closing(get_connection()) as connection:
         _fetch_community(connection, request.community_id)
         you = _demo_user(connection, request.community_id)
