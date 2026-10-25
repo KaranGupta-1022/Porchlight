@@ -7,7 +7,7 @@ _Current phase: 5, 8–9 — live Spark nudge repair, P0 frontend and deployment
 G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after one live nudge attempt. The local mock P0 API loop passes in both communities, 24 backend tests pass, and the frontend build passes. The live Priya nudge selected the right candidate but returned a degraded fallback because its 300-token budget was spent on reasoning; fix that before deploying.
 
 ## Next up (do these in order)
-1. Fix live nudge output starvation in `backend/app/ai/provider.py` / `spark.py`, run one grounded Priya live check, inspect `/api/usage`, switch back to mock, and complete `docs/sample_outputs.md`.
+1. Fix live nudge output starvation in `backend/app/ai/provider.py` / `spark.py`, run one grounded Priya live check, inspect `/api/usage`, and switch back to mock.
 2. Commit the verified QA privacy fix and Docker secret exclusion; review and commit the Phase 8 frontend. Finish local browser interactions at 390px.
 3. Raise H5 for Vercel and backend host login/env setup once deployment artifacts and local UI are ready. Stay in P0 until deployed live G2 passes.
 
@@ -28,7 +28,8 @@ G1 passed: live Spark smoke returned text and usage; spend is $0.0001686 after o
 | 9 (local prep) | Dockerfile, build-time MiniLM, ffmpeg, deployment notes | File review; container build pending Docker daemon. Full mock API loop passed locally. | `400d444` |
 | 0 (G1) | Live Spark smoke returns text and usage | `AI_MODE=live` `scripts/smoke_spark.py`; `/api/usage` read | pending commit for reasoning fix |
 | 3 (QA fix) | Reject numbered exact addresses in invite title, activity, and place hint | 3 focused privacy cases; 24-test backend suite | `c57a09f` |
-| 9 (QA fix) | Exclude local `.env` secrets from backend Docker build context | `.dockerignore` inspected; Docker build pending daemon | pending commit |
+| 9 (QA fix) | Exclude local `.env` secrets from backend Docker build context | `.dockerignore` inspected; Docker build pending daemon | `8999870` |
+| 5 (samples) | Ten fictional mock prompt/output pairs for nudges, drafts, and invite parsing | QA checked seed facts, safety wording, numbering, and JSON | pending commit |
 
 ## Scope tier checklist
 P0: [ ] map+pins [ ] graph overlay [ ] gaps+reach [ ] spark nudge+draft [ ] voice-to-pin [ ] A/B toggle [ ] mark-as-met updates reach [ ] deployed + reset
@@ -75,7 +76,6 @@ None.
 - Live Voice, deployed G2, and phone flow are not verified yet.
 - A stateless hosted instance can lose the local usage ledger on cold start. Reset demo and same-file restarts preserve it.
 - Docker daemon is not running locally; the Dockerfile has not been built here.
-- `docs/sample_outputs.md` with 10 fictional prompt/output pairs is still pending for Phase 5.
 
 ## Ideas (not approved)
 - None.
