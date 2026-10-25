@@ -151,6 +151,11 @@ activemq-data/
 
 # Environments
 .env
+.env.*
+!.env.example
+node_modules/
+*.db
+cache/
 .envrc
 .venv
 env/
